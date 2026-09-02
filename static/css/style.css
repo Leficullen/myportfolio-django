@@ -21,18 +21,26 @@ body {
     line-height: 1.6;
 }
 
-h1, .brand {
+h1,  .brand {
+    font-family: "Space Grotesk", -apple-system, sans-serif;
+}
+h3,  .brand {
     font-family: "Space Grotesk", -apple-system, sans-serif;
 }
 
 .container {
-    max-width: 960px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 0 1.5rem;
 }
 
 .site-header {
     border-bottom: 1px solid var(--line);
+    position: fixed;
+    z-index: 100;
+    background-color: var(--paper);
+    width: 100%;
+
 }
 
 .site-header .container {
@@ -169,6 +177,15 @@ h1, .brand {
     border: 3px solid var(--ink);
 }
 
+.project-img {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+}
+
 .hero {
     padding: 4.5rem 0 5rem;
 }
@@ -276,4 +293,43 @@ h1, .brand {
     object-fit: cover;
     border-radius: var(--radius);
     border: 3px solid var(--ink);
+}
+
+.project-card {
+    position: relative;
+    width: 300px;
+    height: fit-content;
+    background-color: var(--accent);
+    border-radius: 0 10px 10px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1)  0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s;
+    
+
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+}
+.project-container {
+    display: grid;
+    grid-template-columns: repeat(3 , 1fr);
+
+}
+
+.project-desc-container {
+    display: flex;
+    flex-direction: column;
+    padding: 5px 20px;  
+    color: var(--paper);
+}
+
+.button {
+    outline: none;
+    border: none;
+    padding: 5px 40px;
+    font-family: "Space Grotesk", -apple-system, sans-serif;
+    font-size: medium;
+    width: fit-content;
+    margin: 10px 0px;
+
 }
