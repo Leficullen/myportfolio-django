@@ -7,10 +7,10 @@
 
 :root {
     --ink: #1c1917;
-    --paper: #faf6f0;
-    --accent: #d95d39;
-    --accent-dark: #a8442a;
-    --line: #e3d9c9;
+    --paper: #ffffff;
+    --accent: #0f0f0f;
+    --accent-dark: #00000;
+    --line: #eeeeee;
     --text-muted: #6b6459;
     --radius: 4px;
 }
@@ -472,6 +472,7 @@ button {
 .hero-wrapper {
     position: relative;
     width: 100%;
+    height: fit-content;
     overflow: hidden;
 }
 
@@ -593,4 +594,256 @@ button {
     margin-top: 1rem;
     font-size: 0.85rem;
     font-weight: 600;
+}
+
+.tech-stack {
+    display: flex;
+    flex-direction: column;
+}
+
+.section-title {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin-left: auto;
+    margin-right: auto;
+    width: max-content;
+}
+
+.section-title h3 {
+    font-size: 3rem;
+    font-style: italic;
+    line-height: 2rem;
+}
+
+.section-title p {
+    font-size: 1.5rem;
+    font-style: italic;
+    align-self: flex-start;
+    text-align: start;
+}
+
+.subianto-container {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: min(1100px, 100%);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.tech-stack-container {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    height: fit-content;
+    padding: 5rem;
+    overflow: hidden;
+    background-color: var(--paper);
+}
+
+.tech-stack-container img {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: min(440px, 82vw);
+    height: auto;
+    filter: drop-shadow(0 24px 34px rgba(0, 0, 0, 0.18));
+}
+
+.marquee-card {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: clamp(130px, 11vw, 170px);
+    aspect-ratio: 1 / 1;
+    padding: clamp(1rem, 1vw, 1.5rem);
+    background-color: rgba(255, 255, 255, 0.86);
+    border: 1px solid rgba(28, 25, 23, 0.18);
+    border-radius: 8px;
+    opacity: 0.5;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.marquee-card img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.marquee {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 0;
+    display: grid;
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+    width: 100%;
+    transform: translateY(-50%);
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+    pointer-events: auto;
+}
+
+.marquee-card:hover {
+    opacity: 1;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+
+}
+
+.marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 10s linear infinite;
+    will-change: transform;
+}
+
+.marquee-track-left {
+    display: flex;
+    width: max-content;
+    animation: marquee-left 10s linear infinite;
+    will-change: transform;
+}
+
+.marquee-group {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+    min-width: 100vw;
+    padding-right: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+.github-section {
+    padding: 5rem 1.5rem;
+    background-color: #f7f7f7;
+}
+
+.github-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto 3rem;
+}
+
+.title-sub {
+    color: #5a4bff;
+    font-family: "Space Grotesk", -apple-system, sans-serif;
+    font-size: clamp(1.7rem, 4vw, 3rem);
+    font-style: italic;
+    line-height: 1;
+}
+
+.title-main {
+    margin-top: 0.5rem;
+    color: var(--ink);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 0.95;
+}
+
+.btn-github {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    flex: 0 0 auto;
+    padding: 1rem 1.6rem;
+    color: #ffffff;
+    background-color: var(--ink);
+    border-radius: 999px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.calendar-card {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 4vw, 3.5rem);
+    overflow-x: auto;
+    background-color: #ffffff;
+    border: 1px solid rgba(28, 25, 23, 0.12);
+    border-radius: 18px;
+    box-shadow: 0 20px 60px rgba(28, 25, 23, 0.05);
+}
+
+.calendar-board {
+    --calendar-cell: 14px;
+    --calendar-gap: 6px;
+    min-width: max-content;
+}
+
+.calendar-months {
+    display: grid;
+    grid-template-columns: repeat(53, var(--calendar-cell));
+    gap: var(--calendar-gap);
+    margin-bottom: 0.8rem;
+    color: var(--ink);
+    font-size: 1.05rem;
+}
+
+.calendar-grid {
+    display: flex;
+    gap: var(--calendar-gap);
+}
+
+.calendar-week {
+    display: grid;
+    grid-template-rows: repeat(7, var(--calendar-cell));
+    gap: var(--calendar-gap);
+}
+
+.calendar-day,
+.legend-day {
+    display: block;
+    width: var(--calendar-cell);
+    height: var(--calendar-cell);
+    border: 1px solid rgba(28, 25, 23, 0.08);
+    border-radius: 3px;
+}
+
+.calendar-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    color: var(--ink);
+    font-size: 1.05rem;
+}
+
+.calendar-legend {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.calendar-empty {
+    color: var(--text-muted);
+}
+
+
+@keyframes marquee {
+    from {
+        transform: translateX(0);
+    } to {
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes marquee-left {
+    from {
+        transform: translateX(-50%);
+    } to {
+        transform: translateX(0);
+    }
 }

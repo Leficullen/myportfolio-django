@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
-     <link rel="icon" type="image/x-icon" href="/static/img/lefi-hengker.png">
+    <link rel="icon" type="image/x-icon" href="/static/img/lefi-hengker.png">
 </head>
 <body>
     <header class="site-header">
@@ -57,8 +57,8 @@
         <section class="hero" id="profile">
             <div class="container hero-grid">
                 <div class="hero-identity">
-                    <p class="hero-kicker">Information System &middot; Universitas Indonesia</p>
-                    <h1>{{name}}</h1>
+                    <h1>Leficullen</h1>
+                    <p class="hero-kicker">Design &middot; Code &middot; Deploy &middot;One Piece</p>
                 </div>
                 <div class="hero-photo">
                     <div class="photo-block"></div>
@@ -69,11 +69,11 @@
                     <dl class="meta-list">
                         <div class="meta-row">
                             <dt>NPM</dt>
-                            <dd>2506550721</dd>
+                            <dd>0b10010101011001101110110111000001</dd>
                         </div>
                         <div class="meta-row">
                             <dt>Program</dt>
-                            <dd>S1 Sistem Informasi</dd>
+                            <dd>S1 Vlvwhp Lqirupdvl</dd>
                         </div>
                     </dl>
                     <div class="social-links">
@@ -84,6 +84,146 @@
                 </div>
             </div>
         </section>
+
+        <section class="tech-stack" id="tech-stack">
+            <div class="section-title">
+                <h3>Be an Engineer not a Frameworker</h3>
+                <p>-Fossyy</p>
+            </div>
+            <div class="tech-stack-container">
+                <div class="subianto-container">
+                <img src="/static/img/lefi-subianto.png" alt="Photo of {{name}}">
+            </div>
+
+            <div class="marquee">
+                <div class="marquee-track">
+                    <div class="marquee-group">
+                        {% for tech_stack in tech_stacks.right %}
+                            <div class="marquee-card">
+                                <img src="{{tech_stack.img}}" alt="{{tech_stack.name}}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="marquee-group" aria-hidden="true">
+                        {% for tech_stack in tech_stacks.right %}
+                            <div class="marquee-card">
+                                <img src="{{tech_stack.img}}" alt="">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="marquee-track-left">
+                    <div class="marquee-group">
+                        {% for tech_stack in tech_stacks.left %}
+                            <div class="marquee-card">
+                                <img src="{{tech_stack.img}}" alt="{{tech_stack.name}}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="marquee-group" aria-hidden="true">
+                        {% for tech_stack in tech_stacks.left %}
+                            <div class="marquee-card">
+                                <img src="{{tech_stack.img}}" alt="">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="marquee-track">
+                    <div class="marquee-group">
+                        {% for tech_stack in tech_stacks.right %}
+                            <div class="marquee-card">
+                                <img src="{{tech_stack.img}}" alt="{{tech_stack.name}}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="marquee-group" aria-hidden="true">
+                        {% for tech_stack in tech_stacks.right %}
+                            <div class="marquee-card">
+                                <img src="{{tech_stack.img}}" alt="">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                    <div class="marquee-track-left">
+                    <div class="marquee-group">
+                        {% for tech_stack in tech_stacks.left %}
+                            <div class="marquee-card">
+                                <img src="{{tech_stack.img}}" alt="{{tech_stack.name}}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="marquee-group" aria-hidden="true">
+                        {% for tech_stack in tech_stacks.left %}
+                            <div class="marquee-card">
+                                <img src="{{tech_stack.img}}" alt="">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            </div>
+
+
+
+
+        </section>
+
+        <section class="github-section">
+            <div class="github-header">
+                <div>
+                    <div class="title-sub">A year of building</div>
+                    <h1 class="title-main">GitHub Contributions</h1>
+                </div>
+                <a href="https://github.com/{{ github_username }}" target="_blank" class="btn-github">
+                    <svg height="16" width="16" viewBox="0 0 16 16" fill="white"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                    Visit my GitHub ↗
+                </a>
+            </div>
+
+            <div class="calendar-card">
+                {% if github_calendar %}
+                    <div class="calendar-board">
+                        <div class="calendar-months">
+                            {% for month in github_calendar.months %}
+                                <span style="grid-column: span {{ month.totalWeeks }};">{{ month.name }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="calendar-grid">
+                            {% for week in github_calendar.weeks %}
+                                <div class="calendar-week">
+                                    {% for day in week.contributionDays %}
+                                        <span
+                                            class="calendar-day"
+                                            style="background-color: {{ day.color }}"
+                                            title="{{ day.contributionCount }} contributions on {{ day.date }}"
+                                        ></span>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="calendar-footer">
+                            <p>{{ github_calendar.totalContributions }} contributions in the last year</p>
+                            <div class="calendar-legend">
+                                <span>Less</span>
+                                {% for color in github_calendar.colors %}
+                                    <span class="legend-day" style="background-color: {{ color }}"></span>
+                                {% endfor %}
+                                <span>More</span>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="calendar-empty">GitHub contribution data is unavailable.</p>
+                {% endif %}
+            </div>
+        </section>
+
+
+
+
 
         {% comment %} <section class="projects" id="projects">
             <div class="container">
