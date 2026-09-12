@@ -13,11 +13,19 @@
 <body>
     <header class="site-header">
         <div class="container">
-            <a href="{% url 'main:show_main'%}" class="brand">Lefi</a>
              <nav>
-                <a href="{% url 'main:show_main'%}#profile">Profile</a>
-                <a href="{% url 'main:show_projects'%}">Projects</a>
-                <a href="{% url 'main:show_experience'%}">Experience</a>
+                <div class="nav-item">
+                     <a href="{% url 'main:show_main'%}" class="brand nav-link"><i data-lucide="home"></i> <span>Home</span> </a>
+                </div>
+                  <div class="nav-item">
+                     <a href="{% url 'main:show_main'%}" class="brand nav-link"><i data-lucide="id-card"></i><span>Profile</span> </a>
+                </div>
+                  <div class="nav-item">
+                     <a href="{% url 'main:show_projects'%}" class="brand nav-link"><i data-lucide="code"></i><span>Projects</span></a>
+                </div>
+                  <div class="nav-item">
+                     <a href="{% url 'main:show_experience'%}" class="brand nav-link"><i data-lucide="briefcase-business"></i> <span>Experience</span></a>
+                </div>
             </nav>
         </div>
     </header>
