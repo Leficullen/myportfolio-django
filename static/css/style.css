@@ -27,6 +27,15 @@
     --radius-pill: 999px;
 
     --shadow-soft: 0 20px 60px rgba(28, 25, 23, 0.05);
+
+    --btn-height-sm: 2.25rem;
+    --btn-height-md: 2.75rem;
+    --btn-height-lg: 3.25rem;
+    --btn-padding-x: 1.25rem;
+    --btn-shadow:
+        0 3px 2px -2px rgba(28, 25, 23, 0.28),
+        0 4px 3px -2px rgba(28, 25, 23, 0.22);
+    --btn-inset: inset 0 0.5px 0 rgba(255, 255, 255, 0.16);
 }
 
 body {
@@ -38,39 +47,119 @@ body {
     overflow-x: hidden;
 }
 
-// TYPOGRAPHY
- .text-h1 {
-      font-size: var(--text-h1);
-      line-height: 0.95;
-      font-weight: 800;
-  }
+/* Typography */
+.text-h1 {
+    font-size: var(--text-h1);
+    line-height: 0.95;
+    font-weight: 800;
+}
 
-  .text-h2 {
-      font-size: var(--text-h2);
-      line-height: 1;
-      font-weight: 700;
-  }
+.text-h2 {
+    font-size: var(--text-h2);
+    line-height: 1;
+    font-weight: 700;
+}
 
-  .text-h3 {
-      font-size: var(--text-h3);
-      line-height: 1.15;
-      font-weight: 700;
-  }
+.text-h3 {
+    font-size: var(--text-h3);
+    line-height: 1.15;
+    font-weight: 700;
+}
 
-  .text-s1 {
-      font-size: var(--text-s1);
-      line-height: 1.5;
-  }
+.text-s1 {
+    font-size: var(--text-s1);
+    line-height: 1.5;
+}
 
-  .text-s2 {
-      font-size: var(--text-s2);
-      line-height: 1.6;
-  }
+.text-s2 {
+    font-size: var(--text-s2);
+    line-height: 1.6;
+}
 
-  .text-s3 {
-      font-size: var(--text-s3);
-      line-height: 1.5;
-  }
+.text-s3 {
+    font-size: var(--text-s3);
+    line-height: 1.5;
+}
+
+/* Button */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: fit-content;
+    min-height: var(--btn-height-md);
+    padding: 0 var(--btn-padding-x);
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    font-family: "Space Grotesk", -apple-system, sans-serif;
+    font-size: var(--text-s2);
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    user-select: none;
+    touch-action: manipulation;
+    box-shadow: var(--btn-inset), var(--btn-shadow);
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease,
+        translate 0.1s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn:active,
+.btn-active {
+    transform: translateY(0);
+    translate: 0 0.5px;
+    box-shadow: none;
+}
+
+.btn-primary {
+    color: var(--paper);
+    background-color: var(--ink);
+    border-color: var(--ink);
+}
+
+.btn-primary:hover {
+    color: var(--ink);
+    background-color: var(--paper);
+    border-color: #000000;
+}
+
+.btn-outline {
+    color: var(--ink);
+    background-color: transparent;
+    border-color: var(--ink);
+    box-shadow: none;
+}
+
+.btn-outline:hover {
+    color: var(--paper);
+    background-color: var(--ink);
+}
+
+.btn-pill {
+    border-radius: var(--radius-pill);
+}
+
+.btn-sm {
+    min-height: var(--btn-height-sm);
+    padding-inline: 1rem;
+    font-size: var(--text-s3);
+}
+
+.btn-lg {
+    min-height: var(--btn-height-lg);
+    padding-inline: 1.6rem;
+    font-size: var(--text-s1);
+}
 
 
 h1,  .brand {
@@ -110,7 +199,6 @@ button {
     z-index: 100;
     background-color: var(--paper);
     width: 100%;
-
 }
 
 .site-header .container {
@@ -202,22 +290,6 @@ button {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
-}
-
-.social-link {
-    display: inline-block;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-decoration: none;
-    color: var(--paper);
-    background-color: var(--ink);
-    border-radius: var(--radius);
-    padding: 0.5rem 1.1rem;
-    transition: background-color 0.2s ease;
-}
-
-.social-link:hover {
-    background-color: var(--accent);
 }
 
 .hero-photo {
@@ -325,17 +397,6 @@ button {
     color: var(--accent);
 }
 
-.button {
-    outline: none;
-    border: none;
-    padding: 8px 40px;
-    font-family: "Space Grotesk", -apple-system, sans-serif;
-    font-size: medium;
-    width: fit-content;
-    margin: 10px 0px;
-    justify-content: center;
-}
-
 .photos-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -396,19 +457,6 @@ button {
     text-decoration-thickness: 5px;
 }
 
-.hero-container a {
-    background-color: var(--accent);
-    color: var(--paper);
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    padding: 10px 50px;
-    text-decoration: none;
-    text-size: 1.4rem;
-}
-.hero-container a:hover {
-    background-color: var(--paper);
-    color: var(--accent);
-}
 .hero-wrapper {
     position: relative;
     width: 100%;
@@ -423,9 +471,9 @@ button {
 }
 
 
-// Responsiveness
+/* Responsiveness */
 
-// Tablet (Max 768px) */
+/* Tablet (Max 768px) */
 @media (max-width: 768px) {
 
     .hero-container h1 {
@@ -691,18 +739,11 @@ button {
 }
 
 .github-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
     flex: 0 0 auto;
-    padding: 1rem 1.6rem;
-    color: #ffffff;
-    background-color: var(--ink);
-    border-radius: 999px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    text-decoration: none;
+}
+
+.github-link svg {
+    flex: 0 0 auto;
 }
 
 .calendar-card {
