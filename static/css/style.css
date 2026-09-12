@@ -10,7 +10,7 @@
     --paper: #ffffff;
     --accent: #0f0f0f;
     --accent-dark: #00000;
-    --line: #eeeeee;
+    --line: rgb(192, 192, 192);
     --text-muted: #6b6459;
     --radius: 4px;
 
@@ -219,9 +219,15 @@ button {
     padding: 10px 1.5rem;
     width: fit-content;
     max-width: fit-content;
-    background-color: var(--paper);
+    background: rgba(255, 255, 255, 0.68);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
     border-radius: var(--radius-pill);
-    border-bottom: 1px solid var(--line)
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    box-shadow:
+        0 12px 35px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(200, 200, 200, 0.4);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
 }
 
 .site-header .container:hover .nav-link span {
@@ -235,8 +241,8 @@ button {
 }
 
 .brand {
-    font-size: 1.3rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 500;
     color: var(--ink);
     text-decoration: none;
     display: inline-flex;
@@ -247,7 +253,7 @@ button {
 .site-header nav {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 10px;
 }
 
 .nav-link {
@@ -276,13 +282,24 @@ button {
     max-width: 0;
     white-space: nowrap;
     overflow: hidden;
-    transition: all 0.2s ease;
+    transition: all 0.4s ease;
 }
 
 .site-header .container:hover .nav-link,
 .site-header .container:focus-within .nav-link{
-    width: 9rem;
+    width: 10rem;
     gap: 3px;
+}
+
+.site-header .container:hover,
+.site-header .container:focus-within {
+    background: rgba(255, 255, 255, 0.82);
+    border-color: rgba(255, 255, 255, 0.85);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.4),
+        0 18px 45px rgba(0, 0, 0, 0.16),
+        0 0 32px rgba(255, 255, 255, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .site-header .container:hover .nav-link span,
@@ -391,7 +408,6 @@ button {
     border-radius: var(--radius);
     border: 3px solid var(--ink);
 }
-
 
 
 .project-card {
@@ -705,6 +721,7 @@ button {
     align-items: flex-end;
     height: fit-content;
     /* padding: 5rem; */
+    padding-top: 3rem;
     overflow: hidden;
     background-color: var(--paper);
 }
@@ -725,12 +742,13 @@ button {
     justify-content: center;
     width: clamp(130px, 11vw, 170px);
     aspect-ratio: 1 / 1;
-    padding: clamp(1rem, 1vw, 1.5rem);
-    background-color: rgba(255, 255, 255, 0.86);
-    border: 1px solid rgba(28, 25, 23, 0.18);
-    border-radius: 8px;
-    opacity: 0.5;
+    padding: clamp(2rem, 2vw, 2.5rem);
+    background-color: #ffff;
     transition: opacity 0.2s ease, transform 0.2s ease;
+
+    border: 1px solid rgba(28, 25, 23, 0.12);
+    border-radius: 18px;
+    box-shadow: 0 20px 60px rgba(28, 25, 23, 0.05);
 }
 
 .marquee-card img {
@@ -751,7 +769,9 @@ button {
     transform: translateY(-50%);
     overflow: hidden;
     mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
-    pointer-events: auto;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    height: content-fit;
 }
 
 .marquee-card:hover {
@@ -764,7 +784,9 @@ button {
     width: max-content;
     animation: marquee 10s linear infinite;
     will-change: transform;
+    pointer-events: auto;
 }
+
 
 .marquee-track-left {
     display: flex;
