@@ -3,43 +3,14 @@ from django.shortcuts import render
 import os
 import requests
 from datetime import datetime, timedelta, timezone
+from django.http import JsonResponse
 
 from main.models import Experience
 from main.models import Project
+from main.static_datas import ICON_PATHS, TECH_STACKS
 
 def show_main(request):
     github_username = os.getenv("GITHUB_USERNAME", "Leficullen")
-    tech_stacks = {
-        "right": [
-            {"name": "HTML", "img": "/static/logos/html-logo.svg"},
-            {"name": "CSS", "img": "/static/logos/css-logo.svg"},
-            {"name": "JavaScript", "img": "/static/logos/nodejs-logo.svg"},
-            {"name": "TypeScript", "img": "/static/logos/typescript-logo.svg"},
-            {"name": "React", "img": "/static/logos/react-logo.svg"},
-            {"name": "Next.js", "img": "/static/logos/next-logo.svg"},
-            {"name": "Vite", "img": "/static/logos/vite-logo.svg"},
-            {"name": "Vue.js", "img": "/static/logos/vuejs-logo.svg"},
-            {"name": "Tailwind CSS", "img": "/static/logos/tailwind-logo.svg"},
-            {"name": "Figma", "img": "/static/logos/figma-logo.svg"},
-            {"name": "Prettier", "img": "/static/logos/prettier-logo.svg"},
-            {"name": "VS Code", "img": "/static/logos/vscode-logo.svg"},
-            {"name": "GitHub", "img": "/static/logos/github-logo.svg"},
-        ],
-        "left": [
-            {"name": "Git", "img": "/static/logos/git-logo.svg"},
-            {"name": "Docker", "img": "/static/logos/docker-logo.svg"},
-            {"name": "Ubuntu", "img": "/static/logos/ubuntu-logo.svg"},
-            {"name": "Python", "img": "/static/logos/python-logo.svg"},
-            {"name": "Java", "img": "/static/logos/java-logo.svg"},
-            {"name": "PHP", "img": "/static/logos/php-logo.svg"},
-            {"name": "Laravel", "img": "/static/logos/laravel-logo.svg"},
-            {"name": "WordPress", "img": "/static/logos/wordpress-logo.svg"},
-            {"name": "PostgreSQL", "img": "/static/logos/postgresql-logo.svg"},
-            {"name": "MySQL", "img": "/static/logos/myswl-logo.svg"},
-            {"name": "Postman", "img": "/static/logos/postman-logo.svg"},
-            {"name": "npm", "img": "/static/logos/npm-logo.svg"},
-        ],
-    }
 
     context = {
         "name": "Muh. Alfi Rizqy",
@@ -49,9 +20,10 @@ def show_main(request):
             "Mahasiswa Ilmu Komputer Universitas Indonesia yang tertarik "
             "pada pengembangan perangkat lunak dan pendidikan."
         ),
-        "tech_stacks": tech_stacks,
+        "tech_stacks": TECH_STACKS,
         "github_username": github_username,
-        "github_calendar": get_github_contributions(github_username),
+        "github_calendar": None,
+        "icons": ICON_PATHS,
     }
 
     return render(request, "index.html", context)
@@ -126,7 +98,12 @@ def get_github_contributions(username):
     except (KeyError, TypeError, requests.RequestException):
         return None
 
+def github_contributions_api(request):
+    github_username= os.getenv("GITHUB_USERNAME", "Leficullen")
+    github_calendar = get_github_contributions(github_username)
 
-
+    if not github_calendar:
+        return JsonResponse({"error": "Github Contribution data is unavailable"}, status=503)
+    return JsonResponse(github_calendar)
 
 # Create your views here.
