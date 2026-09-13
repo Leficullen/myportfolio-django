@@ -914,6 +914,15 @@ button {
 
 .calendar-empty {
     color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+}
+
+
+.loader {
+    animation: spin 1s linear infinite;
 }
 
 
@@ -930,5 +939,14 @@ button {
         transform: translateX(-50%);
     } to {
         transform: translateX(0);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
     }
 }

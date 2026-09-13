@@ -15,10 +15,10 @@
         <div class="container">
              <nav>
                 <div class="nav-item">
-                     <a href="{% url 'main:show_main'%}" class="brand nav-link"><i data-lucide="home"></i> <span>Home</span> </a>
+                     <a href="{% url 'main:show_main'%}#hero" class="brand nav-link"><i data-lucide="home"></i> <span>Home</span> </a>
                 </div>
                   <div class="nav-item">
-                     <a href="{% url 'main:show_main'%}" class="brand nav-link"><i data-lucide="id-card"></i><span>Profile</span> </a>
+                     <a href="{% url 'main:show_main'%}#profile" class="brand nav-link"><i data-lucide="id-card"></i><span>Profile</span> </a>
                 </div>
                   <div class="nav-item">
                      <a href="{% url 'main:show_projects'%}" class="brand nav-link"><i data-lucide="code"></i><span>Projects</span></a>
@@ -57,5 +57,8 @@
             <p>&copy; 2026 "{{ name }}". Fakultas Ilmu Komputer, Universitas Indonesia.</p>
         </div>
     </footer>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>

@@ -16,10 +16,10 @@
         <div class="container">
              <nav>
                 <div class="nav-item">
-                     <a href="{% url 'main:show_main'%}" class="brand nav-link"><i data-lucide="home"></i> <span>Home</span> </a>
+                     <a href="{% url 'main:show_main'%}#hero" class="brand nav-link"><i data-lucide="home"></i> <span>Home</span> </a>
                 </div>
                   <div class="nav-item">
-                     <a href="{% url 'main:show_main'%}" class="brand nav-link"><i data-lucide="id-card"></i><span>Profile</span> </a>
+                     <a href="{% url 'main:show_main'%}#profile" class="brand nav-link"><i data-lucide="id-card"></i><span>Profile</span> </a>
                 </div>
                   <div class="nav-item">
                      <a href="{% url 'main:show_projects'%}" class="brand nav-link"><i data-lucide="code"></i><span>Projects</span></a>
@@ -138,14 +138,14 @@
                 </div>
                 <div class="marquee-track">
                     <div class="marquee-group">
-                        {% for tech_stack in tech_stacks.right %}
+                        {% for tech_stack in tech_stacks.right_alt %}
                             <div class="marquee-card">
                                 <img src="{{tech_stack.img}}" alt="{{tech_stack.name}}">
                             </div>
                         {% endfor %}
                     </div>
                     <div class="marquee-group" aria-hidden="true">
-                        {% for tech_stack in tech_stacks.right %}
+                        {% for tech_stack in tech_stacks.right_alt %}
                             <div class="marquee-card">
                                 <img src="{{tech_stack.img}}" alt="">
                             </div>
@@ -154,14 +154,14 @@
                 </div>
                     <div class="marquee-track-left">
                     <div class="marquee-group">
-                        {% for tech_stack in tech_stacks.left %}
+                        {% for tech_stack in tech_stacks.left_alt %}
                             <div class="marquee-card">
                                 <img src="{{tech_stack.img}}" alt="{{tech_stack.name}}">
                             </div>
                         {% endfor %}
                     </div>
                     <div class="marquee-group" aria-hidden="true">
-                        {% for tech_stack in tech_stacks.left %}
+                        {% for tech_stack in tech_stacks.left_alt %}
                             <div class="marquee-card">
                                 <img src="{{tech_stack.img}}" alt="">
                             </div>
@@ -186,48 +186,11 @@
             </div>
 
             <div class="calendar-card">
-                {% if github_calendar %}
-                    <div class="calendar-board">
-                        <div class="calendar-months">
-                            {% for month in github_calendar.months %}
-                                <span style="grid-column: span {{ month.totalWeeks }};">{{ month.name }}</span>
-                            {% endfor %}
-                        </div>
-
-                        <div class="calendar-grid">
-                            {% for week in github_calendar.weeks %}
-                                <div class="calendar-week">
-                                    {% for day in week.contributionDays %}
-                                        <span
-                                            class="calendar-day"
-                                            style="background-color: {{ day.color }}"
-                                            title="{{ day.contributionCount }} contributions on {{ day.date }}"
-                                        ></span>
-                                    {% endfor %}
-                                </div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="calendar-footer">
-                            <p>{{ github_calendar.totalContributions }} contributions in the last year</p>
-                            <div class="calendar-legend">
-                                <span>Less</span>
-                                {% for color in github_calendar.colors %}
-                                    <span class="legend-day" style="background-color: {{ color }}"></span>
-                                {% endfor %}
-                                <span>More</span>
-                            </div>
-                        </div>
-                    </div>
-                {% else %}
-                    <p class="calendar-empty">GitHub contribution data is unavailable.</p>
-                {% endif %}
+                <div id="github-calendar-root">
+                    <p class="calendar-empty"><i data-lucide="loader" class="loader"></i>Loading Github Contributions....</p>
+                </div>
             </div>
         </section>
-
-
-
-
 
         {% comment %} <section class="projects" id="projects">
             <div class="container">
@@ -294,5 +257,57 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>lucide.createIcons();</script>
 
+    <script>
+        const calendarRoot = document.querySelector("#github-calendar-root");
+
+        function renderGithubCalendar(calendar) {
+            const months = calendar.months.map((month) => {
+                return `<span style="grid-column: span ${month.totalWeeks};">${month.name}</span>`;
+            }).join("");
+
+            const weeks = calendar.weeks.map((week) => {
+                const days = week.contributionDays.map((day) => {
+                    return `<span class="calendar-day" style="background-color: ${day.color}" title="${day.contributionCount} contributions on ${day.date}"></span>`;
+                }).join("");
+
+                return `<div class="calendar-week">${days}</div>`;
+            }).join("");
+
+             const colors = calendar.colors.map((color) => {
+                return `<span class="legend-day" style="background-color: ${color}"></span>`;
+            }).join("");
+
+          calendarRoot.innerHTML = `
+              <div class="calendar-board">
+                  <div class="calendar-months">${months}</div>
+                  <div class="calendar-grid">${weeks}</div>
+                  <div class="calendar-footer">
+                      <p>${calendar.totalContributions} contributions in the last year</p>
+                      <div class="calendar-legend">
+                          <span>Less</span>
+                          ${colors}
+                          <span>More</span>
+                      </div>
+                  </div>
+              </div>
+          `;
+
+        }
+
+        setTimeout(async () => {
+            try {
+                const response = await fetch("{% url 'main:github_contributions_api' %}");
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch Github Contributions");
+                }
+
+                const calendar = await response.json();
+                renderGithubCalendar(calendar);
+            } catch (error) {
+                calendarRoot.innerHTML = `<p class="calendar-empty">GitHub contribution data is unavailable.</p>`;
+            }
+        }, 500)
+    </script>
 </body>
 </html>
