@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from main.models import Experience
+from main.models import Experience, Project
 
 
 class MainTest(TestCase):
@@ -42,7 +42,7 @@ class MainTest(TestCase):
         self.assertContains(response, self.experience.description)
         self.assertContains(response, "Part-Time")
         self.assertContains(response, "Sedang berlangsung")
-        self.assertContains(response, f'href="{reverse("main:show_main")}"')
+        self.assertContains(response, f'href="{reverse("main:show_main")}#hero"')
 
     def test_empty_experience_page(self):
         Experience.objects.all().delete()
@@ -58,3 +58,32 @@ class MainTest(TestCase):
         self.assertFalse(self.experience.is_ongoing)
         self.assertContains(response, "Selesai")
         self.assertNotContains(response, "Sedang berlangsung")
+
+    # 1. URL Projects dapat diakses dan menggunakan template yang tepat
+    def test_project_url_is_accessible(self):
+        response = self.client.get(reverse("main:show_projects"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "projects.html")
+
+    # 2. Data model muncul di halaman HTML ketika ada data
+    def test_project_data_appears(self):
+        project = Project.objects.create(
+            title="Fisiomate",
+            description="Aplikasi untuk membantu Rehabilitasi Fisioterapi",
+            image="/static/img/project-fisiomate.webp",
+            url_link="https://fisiomate.leficullen.xyz"
+        )
+
+        response = self.client.get(reverse("main:show_projects"))
+
+        self.assertContains(response, project.title)
+        self.assertContains(response, project.description)
+        self.assertContains(response, project.image)
+        self.assertContains(response, project.url_link)
+
+    # 3. Halaman HTML menampilkan pesan kondisi kosong ketika belum ada data
+    def test_project_data_empty(self):
+        response = self.client.get(reverse("main:show_projects"))
+
+        self.assertContains(response,"Belum ada proyek yang ditambahkan")

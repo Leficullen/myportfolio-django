@@ -13,11 +13,19 @@
 <body>
     <header class="site-header">
         <div class="container">
-            <a href="{% url 'main:show_main'%}" class="brand">Lefi</a>
              <nav>
-                <a href="{% url 'main:show_main'%}#profile">Profile</a>
-                <a href="{% url 'main:show_projects'%}">Projects</a>
-                <a href="{% url 'main:show_experience'%}">Experience</a>
+                <div class="nav-item">
+                     <a href="{% url 'main:show_main'%}#hero" class="brand nav-link"><i data-lucide="home"></i> <span>Home</span> </a>
+                </div>
+                  <div class="nav-item">
+                     <a href="{% url 'main:show_main'%}#profile" class="brand nav-link"><i data-lucide="id-card"></i><span>Profile</span> </a>
+                </div>
+                  <div class="nav-item">
+                     <a href="{% url 'main:show_projects'%}" class="brand nav-link"><i data-lucide="code"></i><span>Projects</span></a>
+                </div>
+                  <div class="nav-item">
+                     <a href="{% url 'main:show_experience'%}" class="brand nav-link"><i data-lucide="briefcase-business"></i> <span>Experience</span></a>
+                </div>
             </nav>
         </div>
     </header>
@@ -34,9 +42,13 @@
                          <div class="project-desc">
                               <h3>{{project.title}}</h3>
                               <p>{{project.description}}</p>
-                              <a href="{{project.url_link}}" target="_blank"> <button class="button">Visit →</button></a>
+                              <a href="{{project.url_link}}" target="_blank" class="btn btn-primary">Visit →</a>
                          </div>
                          </div>
+                    {% empty %}
+                         <p class="empty-state">
+                              Belum ada proyek yang ditambahkan.
+                         </p>
                     {% endfor %}
                 </div>
             </div>
@@ -49,5 +61,8 @@
             <p>&copy; 2026 "{{ name }}". Fakultas Ilmu Komputer, Universitas Indonesia.</p>
         </div>
     </footer>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>

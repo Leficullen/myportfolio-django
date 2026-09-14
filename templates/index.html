@@ -8,27 +8,36 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
-     <link rel="icon" type="image/x-icon" href="/static/img/lefi-hengker.png">
+    <link rel="icon" type="image/x-icon" href="/static/img/lefi-hengker.png">
+
 </head>
 <body>
     <header class="site-header">
         <div class="container">
-            <a href="{% url 'main:show_main'%}" class="brand">Lefi</a>
              <nav>
-                <a href="{% url 'main:show_main'%}#profile">Profile</a>
-                <a href="{% url 'main:show_projects'%}">Projects</a>
-                <a href="{% url 'main:show_experience'%}">Experience</a>
+                <div class="nav-item">
+                     <a href="{% url 'main:show_main'%}#hero" class="brand nav-link"><i data-lucide="home"></i> <span>Home</span> </a>
+                </div>
+                  <div class="nav-item">
+                     <a href="{% url 'main:show_main'%}#profile" class="brand nav-link"><i data-lucide="id-card"></i><span>Profile</span> </a>
+                </div>
+                  <div class="nav-item">
+                     <a href="{% url 'main:show_projects'%}" class="brand nav-link"><i data-lucide="code"></i><span>Projects</span></a>
+                </div>
+                  <div class="nav-item">
+                     <a href="{% url 'main:show_experience'%}" class="brand nav-link"><i data-lucide="briefcase-business"></i> <span>Experience</span></a>
+                </div>
             </nav>
         </div>
     </header>
 
     <main>
-        <section class="hero-wrapper" id="hero">
+        <section class="hero" id="hero">
             <div class="hero-container">
                 <h1>Muh. <span>Alfi</span> Rizqy</h1>
                 <p>An Information System student in University of Indonesia</p>
                 <div class="button-container">
-                    <a class="button" href="#profile">Explore Me</a>
+                    <a class="btn btn-lg btn-secondary btn-pill" href="#profile">Explore Me</a>
                 </div>
             </div>
             <div class="photos-grid">
@@ -54,34 +63,135 @@
             </div>
         </section>
 
-        <section class="hero" id="profile">
-            <div class="container hero-grid">
-                <div class="hero-identity">
-                    <p class="hero-kicker">Information System &middot; Universitas Indonesia</p>
-                    <h1>{{name}}</h1>
-                </div>
-                <div class="hero-photo">
+        <section class="profile" id="profile">
+            <div class="container profile-grid">
+                <div class="profile-photo">
                     <div class="photo-block"></div>
                     <img class="avatar" src="/static/img/lefi-hengker.png" alt="Photo of {{name}}">
                 </div>
-                <div class="hero-details">
+                <div class="profile-identity">
+                    <h1>Leficullen</h1>
+                    <p class="profile-kicker">Design &middot; Code &middot; Deploy &middot; One Piece</p>
                     <p class="bio">A software engineering enthusiast who’s love turning ideas into real digital experiences, exploring new technologies, and continuously improving skills.</p>
                     <dl class="meta-list">
                         <div class="meta-row">
                             <dt>NPM</dt>
-                            <dd>2506550721</dd>
+                            <dd>0b10010101011001101110110111000001</dd>
                         </div>
                         <div class="meta-row">
                             <dt>Program</dt>
-                            <dd>S1 Sistem Informasi</dd>
+                            <dd>S1 Vlvwhp Lqirupdvl</dd>
                         </div>
                     </dl>
                     <div class="social-links">
-                        <a href="https://github.com/Leficullen/" class="social-link">GitHub</a>
-                        <a href="https://www.linkedin.com/in/alfi-rizqy-6990b4372/" class="social-link">LinkedIn</a>
-                        <a href="mailto:alfirizqy2007@gmail.com" class="social-link">Email</a>
+                        <a href="https://github.com/Leficullen/" class="btn btn-secondary btn-pill"><i lucide-data="github"></i>GitHub</a>
+                        <a href="https://www.linkedin.com/in/alfi-rizqy-6990b4372/" class="btn btn-secondary btn-pill">LinkedIn</a>
+                        <a href="mailto:alfirizqy2007@gmail.com" class="btn btn-secondary btn-pill">Email</a>
                     </div>
                 </div>
+
+            </div>
+        </section>
+
+        <section class="tech-stack" id="tech-stack">
+            <div class="section-title">
+                <h3>Be an Engineer not a Frameworker</h3>
+                <p>-Fossyy</p>
+            </div>
+            <div class="tech-stack-container">
+                <div class="subianto-container">
+                <img src="/static/img/lefi-subianto.png" alt="Photo of {{name}}">
+            </div>
+
+            <div class="marquee">
+                <div class="marquee-track">
+                    <div class="marquee-group">
+                        {% for tech_stack in tech_stacks.right %}
+                            <div class="marquee-card">
+                                <img src="{{tech_stack.img}}" alt="{{tech_stack.name}}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="marquee-group" aria-hidden="true">
+                        {% for tech_stack in tech_stacks.right %}
+                            <div class="marquee-card">
+                                <img src="{{tech_stack.img}}" alt="">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="marquee-track-left">
+                    <div class="marquee-group">
+                        {% for tech_stack in tech_stacks.left %}
+                            <div class="marquee-card">
+                                <img src="{{tech_stack.img}}" alt="{{tech_stack.name}}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="marquee-group" aria-hidden="true">
+                        {% for tech_stack in tech_stacks.left %}
+                            <div class="marquee-card">
+                                <img src="{{tech_stack.img}}" alt="">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="marquee-track">
+                    <div class="marquee-group">
+                        {% for tech_stack in tech_stacks.right_alt %}
+                            <div class="marquee-card">
+                                <img src="{{tech_stack.img}}" alt="{{tech_stack.name}}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="marquee-group" aria-hidden="true">
+                        {% for tech_stack in tech_stacks.right_alt %}
+                            <div class="marquee-card">
+                                <img src="{{tech_stack.img}}" alt="">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                    <div class="marquee-track-left">
+                    <div class="marquee-group">
+                        {% for tech_stack in tech_stacks.left_alt %}
+                            <div class="marquee-card">
+                                <img src="{{tech_stack.img}}" alt="{{tech_stack.name}}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="marquee-group" aria-hidden="true">
+                        {% for tech_stack in tech_stacks.left_alt %}
+                            <div class="marquee-card">
+                                <img src="{{tech_stack.img}}" alt="">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            </div>
+        </section>
+
+        <section class="github-section">
+            <div class="container github-header">
+                <div>
+                    <div class="github-kicker">A Glimpse of</div>
+                    <h1 class="github-title">My Contributions</h1>
+                </div>
+                <a href="https://github.com/{{ github_username }}" target="_blank" class="btn btn-secondary btn-pill btn-lg github-link">
+                    <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="{{ icons.github }}"/></svg>
+                    Explore More
+                </a>
+            </div>
+
+            <div class="calendar-card">
+                <div id="github-calendar-root">
+                    <p class="calendar-empty"><i data-lucide="loader" class="loader"></i>Loading Github Contributions....</p>
+                </div>
+            </div>
+            <div class="github-mascot">
+                <img src="/static/img/github-mascot.png" alt="">
             </div>
         </section>
 
@@ -146,5 +256,62 @@
             <p>&copy; 2026 {{ name }}. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
         </div>
     </footer>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>lucide.createIcons();</script>
+
+    <script>
+        const calendarRoot = document.querySelector("#github-calendar-root");
+
+        function renderGithubCalendar(calendar) {
+            const months = calendar.months.map((month) => {
+                return `<span style="grid-column: span ${month.totalWeeks};">${month.name}</span>`;
+            }).join("");
+
+            const weeks = calendar.weeks.map((week) => {
+                const days = week.contributionDays.map((day) => {
+                    return `<span class="calendar-day" style="background-color: ${day.color}" title="${day.contributionCount} contributions on ${day.date}"></span>`;
+                }).join("");
+
+                return `<div class="calendar-week">${days}</div>`;
+            }).join("");
+
+             const colors = calendar.colors.map((color) => {
+                return `<span class="legend-day" style="background-color: ${color}"></span>`;
+            }).join("");
+
+          calendarRoot.innerHTML = `
+              <div class="calendar-board">
+                  <div class="calendar-months">${months}</div>
+                  <div class="calendar-grid">${weeks}</div>
+                  <div class="calendar-footer">
+                      <div class="calendar-legend">
+                          <span>Less</span>
+                          ${colors}
+                          <span>More</span>
+                      </div>
+                      <p>${calendar.totalContributions} contributions in the last year</p>
+
+                  </div>
+              </div>
+          `;
+
+        }
+
+        setTimeout(async () => {
+            try {
+                const response = await fetch("{% url 'main:github_contributions_api' %}");
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch Github Contributions");
+                }
+
+                const calendar = await response.json();
+                renderGithubCalendar(calendar);
+            } catch (error) {
+                calendarRoot.innerHTML = `<p class="calendar-empty">GitHub contribution data is unavailable.</p>`;
+            }
+        }, 500)
+    </script>
 </body>
 </html>
