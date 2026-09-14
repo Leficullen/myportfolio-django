@@ -17,8 +17,9 @@
 | --------------------- | :----: |
 | Tutorial 0            |    ✅   |
 | Tutorial 1            |    ✅   |
-| Individual Assignment |    ✅   |
+| Assignment 1          |    ✅   |
 | Tutorial 2            |    ✅   |
+| Assignment 2          |    ✅   |
 
 ---
 
