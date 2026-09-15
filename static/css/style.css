@@ -267,7 +267,7 @@ button {
     border-radius: var(--radius-pill);
     color: var(--inl);
     transition: all 0.2s ease;
-    padding: 20px;
+    padding: 24px;
 
 }
 
