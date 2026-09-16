@@ -1,37 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Experience - {{name}}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="icon" type="image/x-icon" href="/static/img/lefi-hengker.png">
+{% extends 'base.html' %}
+{% block content %}
 
-</head>
-<body>
-    <header class="site-header">
-        <div class="container">
-             <nav>
-                <div class="nav-item">
-                     <a href="{% url 'main:show_main'%}#hero" class="brand nav-link"><i data-lucide="home"></i> <span>Home</span> </a>
-                </div>
-                  <div class="nav-item">
-                     <a href="{% url 'main:show_main'%}#profile" class="brand nav-link"><i data-lucide="id-card"></i><span>Profile</span> </a>
-                </div>
-                  <div class="nav-item">
-                     <a href="{% url 'main:show_projects'%}" class="brand nav-link"><i data-lucide="code"></i><span>Projects</span></a>
-                </div>
-                  <div class="nav-item">
-                     <a href="{% url 'main:show_experience'%}" class="brand nav-link"><i data-lucide="briefcase-business"></i> <span>Experience</span></a>
-                </div>
-            </nav>
-        </div>
-    </header>
-
-    <main>
+<main>
     <section class="experience-section" id="experience">
         <div class="container">
             <p class="section-kicker">Perjalanan saya sejauh ini</p>
@@ -62,17 +32,5 @@
             </div>
         </div>
     </section>
-</main>
-
-    <footer class="site-footer">
-        <div class="container">
-            <p>&copy; 2026 {{ name }}. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
-        </div>
-    </footer>
-
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script>lucide.createIcons();</script>
-
-
-</body>
-</html>
+    </main>
+{% endblock content %}

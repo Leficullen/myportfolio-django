@@ -19,10 +19,11 @@ from django.urls import path, include
 
 from main.urls import show_main
 
-from main.views import show_main
+from main.views import show_main, create_project
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include("main.urls"))
+    path('', include("main.urls")),
+    path('projects/add/', create_project, name="create_project")
 
 ]
