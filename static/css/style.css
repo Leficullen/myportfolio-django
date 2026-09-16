@@ -231,15 +231,48 @@ button {
     transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
 }
 
-.site-header .container:hover .nav-link span {
-    opacity: 1;
-    max-width: 6rem;
+
+
+@media (hover: hover) and (pointer: fine) {
+    .site-header .container:hover .nav-link span {
+        opacity: 1;
+        max-width: 6rem;
+    }
+
+
+    .site-header .container:hover .nav-link,
+    .site-header .container:focus-within .nav-link{
+        width: 10rem;
+        gap: 3px;
+    }
+
+    .site-header .container:hover,
+    .site-header .container:focus-within {
+        background: rgba(255, 255, 255, 0.82);
+        border-color: rgba(255, 255, 255, 0.85);
+        box-shadow:
+            0 0 0 1px rgba(255, 255, 255, 0.4),
+            0 18px 45px rgba(0, 0, 0, 0.16),
+            0 0 32px rgba(255, 255, 255, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .nav-link:hover {
+        background-color: var(--ink);
+        color: var(--paper);
+    }
+
+
+    .site-header .container:hover .nav-link span,
+    .site-header .container:focus-within .nav-link span {
+        opacity: 1;
+        max-width: 6rem;
+    }
+
+
 }
 
-.nav-link:hover {
-    background-color: var(--ink);
-    color: var(--paper);
-}
+
 
 .brand {
     font-size: 1rem;
@@ -286,28 +319,7 @@ button {
     transition: all 0.4s ease;
 }
 
-.site-header .container:hover .nav-link,
-.site-header .container:focus-within .nav-link{
-    width: 10rem;
-    gap: 3px;
-}
 
-.site-header .container:hover,
-.site-header .container:focus-within {
-    background: rgba(255, 255, 255, 0.82);
-    border-color: rgba(255, 255, 255, 0.85);
-    box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.4),
-        0 18px 45px rgba(0, 0, 0, 0.16),
-        0 0 32px rgba(255, 255, 255, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
-.site-header .container:hover .nav-link span,
-.site-header .container:focus-within .nav-link span {
-    opacity: 1;
-    max-width: 6rem;
-}
 
 .site-header nav a {
     color: var(--ink);
@@ -451,7 +463,6 @@ button {
     transition: filter 0.3s ease;
     filter: brightness(1);
 }
-
 
 
 .project-card:hover .project-desc{
@@ -1257,7 +1268,7 @@ button {
 
     .site-header .container:hover .nav-link,
     .site-header .container:focus-within .nav-link {
-        width: fit;
+        width: 1.5rem;
         gap: 0;
     }
 

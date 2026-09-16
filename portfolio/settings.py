@@ -35,6 +35,8 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "muh-alfi-myportfolio.pws.cs.ui.ac.id
 
 CSRF_TRUSTED_ORIGINS = ["https://muh-alfi-myportfolio.pws.cs.ui.ac.id"]
 
+PORTFOLIO_EDIT_SECRET = os.getenv("PORTFOLIO_EDIT_SECRET", "")
+
 
 # Application definition
 
