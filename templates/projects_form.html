@@ -20,6 +20,14 @@
                             {% endfor %}
                         </div>
                     {% endfor %}
+                    <div class="form-group">
+                        <label for="edit_secret">Kode Rahasia</label>
+                        <input type="password"
+                               name="edit_secret"
+                               id="edit_secret"
+                               placeholder="Masukkan kode rahasia"
+                               required>
+                    </div>
                     <button type="submit" class="button">Tambah Project</button>
                     <a href="{% url 'main:show_projects' %}" class="button button-secondary">Batal</a>
                 </form>
