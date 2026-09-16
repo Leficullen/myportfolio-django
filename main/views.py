@@ -14,6 +14,10 @@ from django.core import serializers
 from django.shortcuts import get_object_or_404, redirect, render
 from main.forms import ProjectForm
 
+from django.conf import settings
+from django.contrib import messages
+from hmac import compare_digest
+
 def show_main(request):
     github_username = os.getenv("GITHUB_USERNAME", "Leficullen")
 
@@ -128,10 +132,18 @@ def github_contributions_api(request):
 def create_project(request):
     form = ProjectForm(request.POST or None)
 
-    if (request.method == "POST" and form.is_valid()):
-        form.save()
-        messages.success(request, "Proyek baru berhasil ditambahkan!")
-        return redirect("main:show_projects")
+    if (request.method == "POST"):
+        if not has_edit_secret(request):
+            messages.error(request, "Kode rahasia salah!")
+            return render(request, "projects_form.html", {
+                "name": "Lefi",
+                "form": form,
+            })
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Proyek baru berhasil ditambahkan!")
+            return redirect("main:show_projects")
 
     context = {
         "name": "Lefi",
@@ -156,10 +168,28 @@ def delete_project(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
 
     if request.method == 'POST':
+        if not has_edit_secret(request):
+            messages.error(request, "Kode rahasia salah!")
+            return redirect("main:show_projects")
+
         project.delete()
         messages.success(request, "Project berhasil dihapus")
         return redirect("main:show_projects")
 
     return redirect("main:show_projects")
+
+def has_edit_secret(request):
+    expected_secret = settings.PORTFOLIO_EDIT_SECRET
+
+    header_secret = request.headers.get("X-Portfolio-Secret", "")
+    form_secret = request.POST.get("edit_secret", "")
+
+    return (
+        expected_secret
+        and (
+            compare_digest(header_secret, expected_secret)
+            or compare_digest(form_secret, expected_secret)
+        )
+    )
 
 # Create your views here.
