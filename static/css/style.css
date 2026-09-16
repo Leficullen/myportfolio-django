@@ -346,7 +346,7 @@ button {
     display: grid;
     grid-template-columns: repeat(2, 1fr );
     align-items: center;
-    gap: clamp(2rem, 5vw, 4rem);
+    gap: 1rem;
     width: 100%;
 }
 
@@ -400,6 +400,8 @@ button {
 .profile-photo {
     align-self: center;
     position: relative;
+    margin: auto;
+
 }
 
 .profile-photo img {
@@ -648,7 +650,7 @@ button {
 
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
     width: min(100%, 1200px);
     padding: 0 1.5rem;
     text-align: center;
@@ -673,9 +675,8 @@ button {
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    width: min(1300px, 100%);
+    width: 1300px;
     margin: 0 auto;
-    padding-top: 10rem;
 }
 
 .tech-stack-container {
@@ -694,7 +695,7 @@ button {
     position: relative;
     z-index: 2;
     display: block;
-    width: min(440px, 82vw);
+    width: 550px;
     height: auto;
     filter: drop-shadow(0 24px 34px rgba(0, 0, 0, 0.18));
 }
@@ -794,15 +795,14 @@ button {
 .github-kicker {
     color: var(--paper);
     font-family: "Space Grotesk", -apple-system, sans-serif;
-    font-size: clamp(1.7rem, 4vw, 3rem);
-    font-style: italic;
+    font-size: var(--text-h3);
     line-height: 1;
 }
 
 .github-title {
     margin-top: 0.5rem;
     color: var(--paper);
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-size: var(--text-h2);
     font-weight: 800;
     line-height: 0.95;
 }
@@ -1224,6 +1224,10 @@ button {
         width: 100%;
         text-align: center;
     }
+
+    .profile-photo img {
+        width: 400px;
+    }
 }
 
 
@@ -1308,9 +1312,13 @@ button {
 
     .profile-photo {
         justify-self: center;
-        width: 320px;
+        width: 700px;
         display: flex;
         justify-content: center;
+    }
+
+    .profile-photo img {
+        width: 100px;
     }
 
     .profile .bio {
@@ -1323,7 +1331,7 @@ button {
     }
 
     .tech-stack {
-        padding-top: 4rem;
+        padding-top: 2rem;
     }
 
     .section-title {
@@ -1335,9 +1343,7 @@ button {
         padding-top: 1rem;
     }
 
-    .subianto-container {
-        padding-top: 8rem;
-    }
+
 
     .marquee-card {
         width: clamp(96px, 18vw, 130px);
@@ -1456,7 +1462,7 @@ button {
     }
 
     .subianto-container {
-        padding-top: 9rem;
+        padding-top: 0;
     }
 
     .tech-stack-container img {
