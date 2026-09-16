@@ -2,27 +2,52 @@
 {% block content %}
 
 <main>
+    <section class="projects" id="projects">
         <div class="container">
-            <section class="projects" id="projects">
-        <div class="container">
-            <h1>Deep Dive into my Projects</h1>
+            <div class="project-header">
+                 <h1>Deep Dive into my Projects</h1>
+                 <a href="{% url 'main:create_project' %}" class="btn  btn-primary"><span>+</span>Tambah Proyek</a>
+            </div>
+
+            <form method="get" action="{% url 'main:show_projects' %}" class="project-search">
+                <input type="search"
+                name="title"
+                value="{{title_query}}"
+                placeholder="Cari berdasarkan Nama Proyek" class="project-search__input"
+                aria-label="Cari berdasarkan nama proyek">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+
+
             <div class="project-container">
                 {% for project in project_list %}
                         <div class="project-card">
-                        <img class="project-img" src="{{project.image}}" alt="Photo of {{project.title}}"/>
-                        <div class="project-desc">
-                            <h3>{{project.title}}</h3>
-                            <p>{{project.description}}</p>
-                            <a href="{{project.url_link}}" target="_blank" class="btn btn-primary">Visit →</a>
-                        </div>
+                            <div class="project-card-actions">
+                                <div class="project-actions">
+                                    {% if project.project_url %}
+                                        <a href="{{ project.project_url }}" class="btn ">Lihat Project</a>
+                                    {% endif %}
+                                    {% include "components/project_delete_modal.html" with project=project %}
+                                </div>
+                            </div>
+                            <img class="project-img" src="{{project.image}}" alt="Photo of {{project.title}}"/>
+                            <div class="project-desc">
+                                <h3>{{project.title}}</h3>
+                                <h4>Tech Stack: {{project.tech_stack}}</h4>
+                                <p>{{project.description}}</p>
+                                <a href="{{project.url_link}}" target="_blank" class="btn btn-primary">Visit →</a>
+                            </div>
                         </div>
                 {% empty %}
-                        <p class="empty-state">
-                            Belum ada proyek yang ditambahkan.
-                        </p>
+                        {% if title_query %}
+                            <p class="empty-state">Tidak ada Proyek dengan nama tersebut</p>
+                        {% else %}
+                            <p class="empty-state">
+                                Belum ada proyek yang ditambahkan.
+                            </p>
+                        {% endif %}
                 {% endfor %}
             </div>
-        </div>
     </section>
 </main>
 {% endblock content %}

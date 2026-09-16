@@ -36,6 +36,7 @@ class Project(models.Model):
      description = models.TextField()
      image = models.CharField(max_length=255, blank=True, null=True)
      url_link = models.URLField(blank=True, null=True)
+     tech_stack = models.CharField(max_length=255, blank=True)
 
      def __str__(self):
           return self.title
