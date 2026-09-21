@@ -6,10 +6,19 @@
     <main>
         <section class="experience-section">
             <div class="container">
-                <h1>Add New Experiences</h1>
-                <form method="post"
-                      action="{% url 'main:create_experience' %}"
-                      class="project-form">
+                {% if is_edit %}
+                    <h1>Edit Experiences</h1>
+                    <form method="post"
+                    action="{% url 'main:edit_experience' experience_id=experience.id %}"
+                    class="project-form">
+                {% else %}
+                    <h1>Add New Experiences</h1>
+                    <form method="post"
+                    action="{% url 'main:create_experience' %}"
+                    class="project-form">
+                {% endif %}
+
+
                     {% csrf_token %}
                     {% for field in form %}
                          {% if field.name != "started_at" and field.name != "ended_at"  %}
@@ -51,8 +60,14 @@
                                placeholder="Masukkan kode rahasia"
                                required>
                     </div>
-                    <button type="submit" class="button">Tambah Experience</button>
-                    <a href="{% url 'main:show_experiences' %}" class="button button-secondary">Batal</a>
+                    {% if is_edit %}
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+
+                    {% else %}
+                    <button type="submit" class="btn btn-primary">Tambah Experience</button>
+
+                    {% endif %}
+                    <a href="{% url 'main:show_experiences' %}" class="btn btn-primary">Batal</a>
                 </form>
             </div>
         </section>

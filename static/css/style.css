@@ -609,10 +609,24 @@ button {
 }
 
 .experience-card {
+    display: flex;
+    flex-direction: column;
     padding: 1.25rem;
     background-color: #fff;
     border: 1px solid var(--line);
     border-radius: var(--radius);
+}
+
+.experience-card__meta,
+.experience-card__actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+.experience-card__meta {
+    justify-content: space-between;
 }
 
 .experience-category {
@@ -633,9 +647,17 @@ button {
 }
 
 .experience-status {
-    margin-top: 1rem;
     font-size: 0.85rem;
     font-weight: 600;
+    color: var(--text-muted);
+}
+
+.experience-card__actions {
+    margin-top: 1rem;
+}
+
+.experience-card__delete {
+    margin: 0;
 }
 
 .tech-stack {
