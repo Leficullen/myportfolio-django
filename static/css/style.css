@@ -487,6 +487,7 @@ button {
     transform: translateY(100px);
     transition: all 0.3s ease;
     justify-content: center;
+    gap: 10px;
 }
 
 .project-desc:hover {
@@ -497,6 +498,7 @@ button {
     background-color: var(--accent);
     color: var(--paper);
     transition: color  0.2s;
+    margin-top: 2rem;
 }
 
 .project-desc button:hover {
@@ -607,10 +609,24 @@ button {
 }
 
 .experience-card {
+    display: flex;
+    flex-direction: column;
     padding: 1.25rem;
     background-color: #fff;
     border: 1px solid var(--line);
     border-radius: var(--radius);
+}
+
+.experience-card__meta,
+.experience-card__actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+.experience-card__meta {
+    justify-content: space-between;
 }
 
 .experience-category {
@@ -631,9 +647,17 @@ button {
 }
 
 .experience-status {
-    margin-top: 1rem;
     font-size: 0.85rem;
     font-weight: 600;
+    color: var(--text-muted);
+}
+
+.experience-card__actions {
+    margin-top: 1rem;
+}
+
+.experience-card__delete {
+    margin: 0;
 }
 
 .tech-stack {
@@ -940,17 +964,19 @@ button {
     width: 100%;
     box-sizing: border-box;
     padding: 0.7rem;
-    border: 1px solid var(--accent);
-    border-radius: var(--radius);
+    border-radius: var(--radius-pill);
+    border: 1px solid #d0d5dd;
     font: inherit;
     transition:
         border-color 0.2s ease,
         outline-color 0.2s ease;
+    background: #fDFDFD;
+    padding-left: 1rem;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
-    outline: 2px solid var(--accent);
+    outline: 1.5px solid var(--accent);
     border-color: var(--accent);
 }
 
@@ -1185,6 +1211,64 @@ button {
     justify-content: center;
     gap: 4px;
 }
+
+.date-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.date-row .form-group {
+    flex: 1;
+}
+
+select {
+    width: 100%;
+    padding: 12px 42px 12px 14px;
+    border: 1px solid #d0d5dd;
+    border-radius: var(--radius-pill);
+    background-color: #fff;
+    color: #1f2937;
+    font: inherit;
+    cursor: pointer;
+
+    appearance: none;
+    -webkit-appearance: none;
+
+    background-image:
+          linear-gradient(45deg, transparent 50%, #475467 50%),
+          linear-gradient(135deg, #475467 50%, transparent 50%);
+      background-position:
+          calc(100% - 18px) 50%,
+          calc(100% - 13px) 50%;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+}
+
+select:focus {
+    outline: 1px solid var(--accent);
+    border-color: var(--accent);
+
+}
+
+section {
+
+}
+
+ @keyframes slide-from-bottom {
+    from {
+      opacity: 0;
+      transform: translateY(70px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-bottom {
+    animation: slide-from-bottom 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
 
 @media (max-width: 600px) {
     .project-header {

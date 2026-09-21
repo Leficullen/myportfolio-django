@@ -1,6 +1,6 @@
-from django.forms import ModelForm, TextInput, Textarea, URLInput
+from django.forms import ModelForm, TextInput, Textarea, URLInput, Select, DateTimeInput
 
-from main.models import Project
+from main.models import Project, Experience
 
 class ProjectForm(ModelForm):
      class Meta:
@@ -31,7 +31,7 @@ class ProjectForm(ModelForm):
                "description": Textarea(
                     attrs={
                          "placeholder": "Masukkan Deskripsi Proyek disini...",
-                         "rows" : 3,
+                         "rows" : 1,
                     }
                ),
                "tech_stack": TextInput(
@@ -49,7 +49,59 @@ class ProjectForm(ModelForm):
                          "placeholder": "/static/img/...",
                     }
                ),
+          }
 
+class ExperienceForm(ModelForm):
 
+     class Meta:
+          model = Experience
+          fields = [
+               "title",
+               "description",
+               "category",
+               "thumbnail",
+               "started_at",
+               "ended_at"
+          ]
+          labels = {
+               "title" : "Judul Pengalaman",
+               "description" : "Deskripsi Pengalaman",
+               "category" : "Kategori",
+               "thumbnail" : "Thumbnail",
+               "started_at" : "Masa Mulai",
+               "ended_at" : "Masa Berakhir"
+          }
+          widgets = {
+               "title" : TextInput(
+                    attrs={
+                         "placeholder":"Masukkan Judul Pengalaman disini...",
+                         "maxlength" : 255,
+                    }
+               ),
+               "description" : Textarea(
+                    attrs={
+                         "placeholder":"Masukkan Deskripsi Pengalaman disini...",
+                         "rows": 1,
+                    }
+               ),
+               "category": Select(
+                    attrs={
+                         "class": "dropdown",
+                    }
+               ),
+               "thumbnail" : TextInput(
+                    attrs={
+                         "placeholder" : "/static/img/...",
+                    }
+               ),
+               "started_at": DateTimeInput(
+                    attrs={"type":"date"},
+                    format="%d/%m/%Y",
+
+               ) ,
+               "ended_at": DateTimeInput(
+                    attrs={"type":"date"},
+                    format="%d/%m/%Y",
+               )
 
           }
