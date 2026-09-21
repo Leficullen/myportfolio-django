@@ -12,7 +12,7 @@ from main.static_datas import ICON_PATHS, TECH_STACKS
 from django.contrib import messages
 from django.core import serializers
 from django.shortcuts import get_object_or_404, redirect, render
-from main.forms import ProjectForm
+from main.forms import ProjectForm, ExperienceForm
 
 from django.conf import settings
 from django.contrib import messages
@@ -37,10 +37,19 @@ def show_main(request):
 
     return render(request, "index.html", context)
 
-def show_experience(request):
+def show_experiences(request):
+    json_response = get_experiences_json(request)
+
+    experiences = serializers.deserialize(
+        "json",
+        json_response.content.decode("utf-8")
+    )
+    experiences = [experience.object for experience in experiences]
+    title_query = request.GET.get("title", "").strip()
     context = {
         "name": "Muh. Alfi Rizqy",
-        "experience_list": Experience.objects.all(),
+        "experience_list": experiences,
+        "title_query": title_query
     }
 
     return render(request, "experience.html", context)
@@ -52,10 +61,7 @@ def show_projects(request):
         "json",
         json_response.content.decode("utf-8"),
     )
-    # context = {
-    #     "name": "Muh. Alfi Rizqy",
-    #     "project_list": Project.objects.all(),
-    # }
+
     projects = [project.object for project in projects]
     title_query = request.GET.get("title", "").strip()
 
@@ -131,7 +137,6 @@ def github_contributions_api(request):
 
 def create_project(request):
     form = ProjectForm(request.POST or None)
-
     if (request.method == "POST"):
         if not has_edit_secret(request):
             messages.error(request, "Kode rahasia salah!")
@@ -151,6 +156,8 @@ def create_project(request):
     }
 
     return render(request, "projects_form.html", context)
+
+
 
 
 def get_projects_json(request):
@@ -177,6 +184,49 @@ def delete_project(request, project_id):
         return redirect("main:show_projects")
 
     return redirect("main:show_projects")
+def create_experience(request):
+
+    form = ExperienceForm(request.POST or None)
+    context = {
+            "name" : "Lefi",
+            "form": form,
+        }
+    if (request.method == "POST"):
+        if not has_edit_secret:
+            messages.error(request, "Kode rahasia salah!")
+            render(request, 'experiences_form.html', context)
+
+        if form.is_valid():
+            form.save()
+            return redirect("main:show_experiences")
+
+    return render(request, 'experiences_form.html', context)
+
+
+def get_experiences_json(request):
+    title_query = request.GET.get("title", "").strip()
+    experiences = Experience.objects.all()
+
+    if title_query:
+        experiences = experiences.filter(title__icontains=title_query)
+
+    experiences_json = serializers.serialize("json", experiences)
+    return HttpResponse(experiences_json, content_type="application/json")
+
+def delete_experience(request, project_id):
+    experience = get_object_or_404(Experience, pk=project_id)
+
+    if request.method == "POST":
+        if not has_edit_secret:
+            messages.error("Kata sandi salah!")
+            return redirect("main:show_experiences")
+
+        experience.delete()
+        messages.success("Experience berhasil dihapus!")
+        return redirect("main:show_experiences")
+
+    return redirect("main:show_experiences")
+
 
 def has_edit_secret(request):
     expected_secret = settings.PORTFOLIO_EDIT_SECRET
