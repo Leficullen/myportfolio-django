@@ -21,6 +21,10 @@
 | Assignment 1          |    ✅   |
 | Tutorial 2            |    ✅   |
 | Assignment 2          |    ✅   |
+| Tutorial 3          |    ✅   |
+| Assignment 3         |    ✅   |
+
+
 
 ---
 
@@ -202,8 +206,35 @@ https://chatgpt.com/share/6aa81ec5-4510-83ec-8ca4-7c09717cb7c6
 Selain itu, saya juga sempat bertanya kepada Google AI Overview mengenai Github Section apakah dapat diimplementasikan di Django atau tidak, walaupun dari jawabannya tidak jadi saya gunakan dan memilih menggunakan pendekatan berbeda setelah membaca beberapa dokumentasi mengenai Github API
 https://share.google/aimode/cIrIaPZvOPPyW9ge5
 
+---
+
+# 📑 Individual Assignment 3
+
+## Track Report
+Pada tugas 3, saya memilih mengimplementasikan create, delete, dan edit untuk fitur experience. Saya mulai dengan membuat class form untuk `ExperienceForm`, namun saya sadar di tengah perjalanan koding, saya merasa ada model yang perlu saya sesuaikan, yaitu pada thumbnail experience yang awalnya `URLField` saya ubah ke `CharField` agar mirip dengan skema awal saya seperti di `projects`. Oleh karena itu, saya perlu membuat migration dlu dengan menjalankan `makemigrations` kemudian menjalankan `migrate` lalu kemudian melanjutkan koding. Pada saat membuat widgets untuk class form tersebut, saya mendapati ada sesuatu yang tidak saya temui di tutorial, yaitu input untuk memilih `DateTime`, untuk itu saya mulai meneksplor beberapa forum diskusi django form dan dokumentasi resmi django sendiri untuk mencari widget yang cocok untuk tipe data `started_at` dan `ended_at`.
+Setelah berhasil membuat class form, saya melanjutkan dengan membuat function di `views.py`, bentuknya kurang lebih sama dengan implementasi project pada tutorial jadi saya tidak mengalami kesulitan dalam mengerjakannya. Begitupula dengan implementasi delete experience. Namun, saya mendapati yang tidak ada di tutorial, yaitu `edit`, oleh karena itu saya kembali mengeksplor forum diskusi django dan membuka dokumentasi resmi django untuk mendapatkan informasi bagaimana menghandle hal tersebut. Dari situ saya mendapatkan insight baru bahwa untuk mengedit experience itu kita menggabungkan Http Method `GET` untuk mengambil form berdasarkan id yang dipass ke parameter dan Http Method `POST` untuk menyimpan perubahan.
+
+Untuk requirement tugas 3 sebenarnya sudah terpenuhi, tapi saya mencoba menambahkan animasi simpel ketika halaman dibuka untuk meningkatkan User Experience.
+
+## 💭 Reflective Questions
+### 1. Mengapa kita menggunakan ModelForm pada Django dibanding HTML biasa
+Kata Pak Affan, ModelForm pada Django itu sudah menghandle validasi dasar dan dapat kita atur sesuai dengan data nya,jadi kita tidak perlu menghandle nya lagi. Kalau menurut saya sendiri, model form ini memudahkan karena sudah terhubung langsung ke model Django sehingga segala perubahan yang kita lakukan sudah tersinkronisasi dengan baik, jika kita menggunakan HTML manual, kita harus mengambil setiap nilai request POST dan membuat validasinya sendiri. Jadi dengan menggunakan `ModelForm` itu sangat memudahkan developer dalam membangun website yang berkaitan dengan form.
+`csrf_token` dibutuhkan untuk menjaga agar ornag lain tidak bisa menggunakan method `POST` dan `DELETE` seenaknya, jadi pada saat orang lain ingin menambahkan sesuatu melalui form, aplikasi saya akan menolak jika token yang dimasukkan tidak seusai dengan validasi yang telah saya pasang di `views.py`. Dengan begitu, orang2 nakal tidak akan bisa merusak website saya.
+
+### 2. Mengapa JSON lebih disukai dalam pengembangan aplikasi web modern dibandingkan XML?
+Kalau menurut saya pribadi, sintaks JSON itu lebih simpel dan lebih mudah dibaca dibandingkan sintaks XML, karena JSON itu mirip seperti `dictionary` di python. Selain itu, berdasarkan yang saya ketahui, ukuran JSON itu lebih kecil sehingga lebih unggul dalam transfer data. Selain itu, JSON dapat langsung diubah menjadi object `javascript` melalui proses `serialize` dan `deserialize`, sangat cocok untuk website modern.
+
+### 3. Alur view dalam mengembalikan data portfolio sebagai JSON
+Saat browser mengirimkan request berdasarkan url yang diakses, Django kemudian mencocokkan URL ke view yang menggunakan function terkait. view kemudian mengambil Experience dari database, kemudain Query tersebut diubah ke dalam bentuk `JSON` (Serialize), lalu kemudian view mengembalikan HTTP response berupa `application/json` kemudian dapat dibaca oleh browser dan dirender sesuai dengan peruntukannya masing-masing.
+Serialization harus kita lakukan karena data yang kita miliki masih berisi Model Django sehingga belum dapat kita kirim ke browser. Oleh karena itu, kita perlu mengubah objek Query Model Django tersebut menjadi JSON agar transfer data dapat dilakukan.
+
+## 🤖 AI Disclosure
+Untuk tugas ini, saya tidak menggunakan ai sama sekali, karena instruksi tugasnya sebenarnya kurang lebih sama dengan tutorial yang diberikan, sehingga saya lebih banyak meniru dan mempelajari dari pengerjaan tutorial. Jika mendapati bagian yang tidak saya pahami, saya mengeksplor dan membaca dokumentasi resmi Django. Berikut beberapa referensi yang saya gunakan:
+- https://forum.djangoproject.com/t/change-form-date-input-format/29433
+- https://www.w3schools.com/tags/att_input_type_date.asp
+- https://dev.to/rishav_upadhaya/day-9-adding-edit-delete-features-to-my-blog-project-li6
 
 <p align="center">
-  <strong>Individual Assignment 1 — PBP F</strong><br/>
+  <strong>PBP F</strong><br/>
   Muh. Alfi Rizqy · 2506550721
 </p>
