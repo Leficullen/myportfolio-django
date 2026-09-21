@@ -190,13 +190,14 @@ def create_experience(request):
     context = {
             "name" : "Lefi",
             "form": form,
+            "is_edit": False
         }
     if (request.method == "POST"):
-        if not has_edit_secret:
+        if not has_edit_secret(request):
             messages.error(request, "Kode rahasia salah!")
-            render(request, 'experiences_form.html', context)
+            return render(request, 'experiences_form.html', context)
 
-        if form.is_valid():
+        elif form.is_valid():
             form.save()
             return redirect("main:show_experiences")
 
@@ -213,20 +214,42 @@ def get_experiences_json(request):
     experiences_json = serializers.serialize("json", experiences)
     return HttpResponse(experiences_json, content_type="application/json")
 
-def delete_experience(request, project_id):
-    experience = get_object_or_404(Experience, pk=project_id)
+def delete_experience(request, experience_id):
+    experience = get_object_or_404(Experience, pk=experience_id)
 
     if request.method == "POST":
-        if not has_edit_secret:
-            messages.error("Kata sandi salah!")
+        if not has_edit_secret(request):
+            messages.error(request,"Kata sandi salah!")
             return redirect("main:show_experiences")
 
         experience.delete()
-        messages.success("Experience berhasil dihapus!")
+        messages.success(request,"Experience berhasil dihapus!")
         return redirect("main:show_experiences")
 
     return redirect("main:show_experiences")
 
+def edit_experience(request, experience_id):
+    experience = get_object_or_404(Experience, pk=experience_id)
+
+    if request.method == "POST":
+        form = ExperienceForm(request.POST, instance=experience)
+
+        if not has_edit_secret(request):
+            messages.error(request,"Kata sandi salah!")
+        elif form.is_valid():
+            form.save()
+            messages.success(request, "Experience berhasil diperbarui")
+            return redirect("main:show_experiences")
+    else:
+        form = ExperienceForm(instance=experience)
+
+    context = {
+        "name": "Lefi",
+        "form": form,
+        "experience": experience,
+        "is_edit": True
+    }
+    return render(request, "experiences_form.html", context)
 
 def has_edit_secret(request):
     expected_secret = settings.PORTFOLIO_EDIT_SECRET
