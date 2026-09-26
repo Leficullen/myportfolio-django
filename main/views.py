@@ -18,8 +18,15 @@ from django.conf import settings
 from django.contrib import messages
 from hmac import compare_digest
 
+from django.contrib.auth import login, logout
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+
+import datetime
+
+
 def show_main(request):
     github_username = os.getenv("GITHUB_USERNAME", "Leficullen")
+    last_login = request.COOKIES.get("last_login", "Belum ada sesi login / Cookie tidak ditemukan")
 
     context = {
         "name": "Muh. Alfi Rizqy",
@@ -33,6 +40,7 @@ def show_main(request):
         "github_username": github_username,
         "github_calendar": None,
         "icons": ICON_PATHS,
+        "last_login": last_login
     }
 
     return render(request, "index.html", context)
@@ -264,5 +272,32 @@ def has_edit_secret(request):
             or compare_digest(form_secret, expected_secret)
         )
     )
+
+def register(request):
+    form = UserCreationForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Akun berhasil terdaftar!")
+        return redirect("main:login_user")
+    context = {"form" : form}
+
+    return render(request, "register.html", context)
+
+def login_user(request):
+    form = AuthenticationForm(request, data=request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        login(request, form.get_user())
+        response = redirect("main:show_main")
+        response.set_cookie("last_login", datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        return response
+
+    context = {"form": form}
+    return render(request, "login.html", context)
+
+def logout_user(request):
+    logout(request)
+    messages.success(request, "Logout")
+    return redirect("main:show_main")
 
 # Create your views here.
