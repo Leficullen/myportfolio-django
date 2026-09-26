@@ -18,8 +18,17 @@ from django.conf import settings
 from django.contrib import messages
 from hmac import compare_digest
 
+from django.contrib.auth import login, logout
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.decorators import login_required
+
+import datetime
+
+
 def show_main(request):
     github_username = os.getenv("GITHUB_USERNAME", "Leficullen")
+    last_login = request.COOKIES.get("last_login", "Belum ada sesi login / Cookie tidak ditemukan")
+    user = request.user
 
     context = {
         "name": "Muh. Alfi Rizqy",
@@ -33,6 +42,8 @@ def show_main(request):
         "github_username": github_username,
         "github_calendar": None,
         "icons": ICON_PATHS,
+        "last_login": last_login,
+        "user": user
     }
 
     return render(request, "index.html", context)
@@ -158,8 +169,6 @@ def create_project(request):
     return render(request, "projects_form.html", context)
 
 
-
-
 def get_projects_json(request):
     title_query = request.GET.get("title", "").strip()
     projects = Project.objects.all()
@@ -167,7 +176,7 @@ def get_projects_json(request):
     if title_query:
         projects = projects.filter(title__icontains=title_query)
 
-    projects_json = serializers.serialize("json", projects)
+    projects_json = serializers.serialize("json", projects, use_natural_foreign_keys=True)
     return HttpResponse(projects_json, content_type="application/json")
 
 
@@ -264,5 +273,49 @@ def has_edit_secret(request):
             or compare_digest(form_secret, expected_secret)
         )
     )
+
+def register(request):
+    form = UserCreationForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Akun berhasil terdaftar!")
+        return redirect("main:login_user")
+    context = {"form" : form}
+
+    return render(request, "register.html", context)
+
+def login_user(request):
+    form = AuthenticationForm(request, data=request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        login(request, form.get_user())
+        response = redirect("main:show_main")
+        response.set_cookie("last_login", datetime.datetime.now().strftime("%Y-%m-%d ( %H:%M:%S )"))
+        return response
+
+    context = {"form": form}
+    return render(request, "login.html", context)
+
+def logout_user(request):
+    logout(request)
+    messages.success(request, "Logout")
+
+    response = redirect("main:show_main")
+    response.delete_cookie("last_login")
+    return response
+
+@login_required(login_url="/login/")
+def toggle_star(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+
+    if request.method == "POST":
+        if request.user in project.starred_by.all():
+            project.starred_by.remove(request.user)
+        else:
+            project.starred_by.add(request.user)
+
+    return redirect("main:show_projects")
+
+
 
 # Create your views here.
