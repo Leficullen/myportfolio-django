@@ -20,6 +20,7 @@ from hmac import compare_digest
 
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.decorators import login_required
 
 import datetime
 
@@ -289,7 +290,7 @@ def login_user(request):
     if request.method == "POST" and form.is_valid():
         login(request, form.get_user())
         response = redirect("main:show_main")
-        response.set_cookie("last_login", datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        response.set_cookie("last_login", datetime.datetime.now().strftime("%Y-%m-%d ( %H:%M:%S )"))
         return response
 
     context = {"form": form}
@@ -298,6 +299,23 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     messages.success(request, "Logout")
-    return redirect("main:show_main")
+
+    response = redirect("main:show_main")
+    response.delete_cookie("last_login")
+    return response
+
+@login_required(login_url="/login/")
+def toggle_star(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+
+    if request.method == "POST":
+        if request.user in project.starred_by.all():
+            project.starred_by.remove(request.user)
+        else:
+            project.starred_by.add(request.user)
+
+    return redirect("main:show_projects")
+
+
 
 # Create your views here.
