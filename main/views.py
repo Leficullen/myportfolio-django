@@ -28,6 +28,7 @@ import datetime
 def show_main(request):
     github_username = os.getenv("GITHUB_USERNAME", "Leficullen")
     last_login = request.COOKIES.get("last_login", "Belum ada sesi login / Cookie tidak ditemukan")
+    user = request.user
 
     context = {
         "name": "Muh. Alfi Rizqy",
@@ -41,7 +42,8 @@ def show_main(request):
         "github_username": github_username,
         "github_calendar": None,
         "icons": ICON_PATHS,
-        "last_login": last_login
+        "last_login": last_login,
+        "user": user
     }
 
     return render(request, "index.html", context)
@@ -167,8 +169,6 @@ def create_project(request):
     return render(request, "projects_form.html", context)
 
 
-
-
 def get_projects_json(request):
     title_query = request.GET.get("title", "").strip()
     projects = Project.objects.all()
@@ -176,7 +176,7 @@ def get_projects_json(request):
     if title_query:
         projects = projects.filter(title__icontains=title_query)
 
-    projects_json = serializers.serialize("json", projects)
+    projects_json = serializers.serialize("json", projects, use_natural_foreign_keys=True)
     return HttpResponse(projects_json, content_type="application/json")
 
 

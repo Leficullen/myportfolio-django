@@ -11,6 +11,10 @@
             <div class="button-container">
                 <a class="btn btn-lg btn-secondary btn-pill" href="#profile">Explore Me</a>
             </div>
+            {%if user.is_authenticated%}
+            <p class="last-login text-s3">Username: {{user.username}}</p>
+
+            {%endif%}
             <p class="last-login text-s3">Terakhir Login: {{last_login}}</p>
         </div>
         <div class="photos-grid">
