@@ -260,7 +260,7 @@ def get_experiences_json(request):
     if title_query:
         experiences = experiences.filter(title__icontains=title_query)
 
-    experiences_json = serializers.serialize("json", experiences)
+    experiences_json = serializers.serialize("json", experiences, use_natural_foreign_keys=True)
     return HttpResponse(experiences_json, content_type="application/json")
 
 @login_required(login_url="/login")
@@ -354,8 +354,8 @@ def logout_user(request):
     return response
 
 @login_required(login_url="/login/")
-def toggle_star(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
+def toggle_star_project(request, id):
+    project = get_object_or_404(Project, pk=id)
 
     if request.method == "POST":
         if request.user in project.starred_by.all():
@@ -364,6 +364,18 @@ def toggle_star(request, project_id):
             project.starred_by.add(request.user)
 
     return redirect("main:show_projects")
+
+@login_required(login_url="/login/")
+def toggle_star_experience(request, id):
+    experience = get_object_or_404(Experience, pk=id)
+
+    if request.method == "POST":
+        if request.user in experience.starred_by.all():
+            experience.starred_by.remove(request.user)
+        else:
+            experience.starred_by.add(request.user)
+
+    return redirect("main:show_experiences")
 
 def is_super_user(request):
     return request.user.is_superuser
