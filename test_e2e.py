@@ -1,11 +1,14 @@
 import os
 import sys
+
 import django
 from dotenv import load_dotenv
 from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
 
 load_dotenv()
 
@@ -17,21 +20,50 @@ if not USER_PASSWORD or not ADMIN_PASSWORD:
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "portfolio.settings")
 django.setup()
-from django.contrib.auth.models import User
+
+from django.contrib.auth.models import User  # noqa: E402
+
+
+BASE_URL = "http://127.0.0.1:8000"
+USER_USERNAME = "burhan_test"
+ADMIN_USERNAME = "admin_test"
 
 
 def setup_users():
-    user, _ = User.objects.get_or_create(username="burhan_test")
+    """Create deterministic accounts used only by this E2E smoke test."""
+    user, _ = User.objects.get_or_create(username=USER_USERNAME)
     user.set_password(USER_PASSWORD)
     user.is_superuser = False
     user.is_staff = False
     user.save()
 
-    admin, _ = User.objects.get_or_create(username="admin_test")
+    admin, _ = User.objects.get_or_create(username=ADMIN_USERNAME)
     admin.set_password(ADMIN_PASSWORD)
     admin.is_superuser = True
     admin.is_staff = True
     admin.save()
+
+
+def login_as(driver, wait, username, password):
+    driver.get(f"{BASE_URL}/login/")
+    wait.until(EC.presence_of_element_located((By.NAME, "username"))).send_keys(username)
+    driver.find_element(By.NAME, "password").send_keys(password)
+    driver.find_element(By.CSS_SELECTOR, "form.project-form button[type='submit']").click()
+    wait.until(EC.url_to_be(f"{BASE_URL}/"))
+    wait.until(
+        EC.text_to_be_present_in_element(
+            (By.CSS_SELECTOR, "p.last-login"), username
+        )
+    )
+
+
+def logout(driver, wait):
+    driver.get(f"{BASE_URL}/logout/")
+    wait.until(
+        EC.presence_of_element_located(
+            (By.CSS_SELECTOR, "a[href='/login/']")
+        )
+    )
 
 
 def main():
@@ -44,17 +76,24 @@ def main():
     else:
         options.add_argument("--start-maximized")
     options.add_experimental_option("excludeSwitches", ["enable-logging"])
-    driver = webdriver.Chrome(options=options)
-    wait = WebDriverWait(driver, 10)
-    base_url = "http://127.0.0.1:8000"
 
     try:
-        # 1. Cek csrf token di form login
+        driver = webdriver.Chrome(options=options)
+    except WebDriverException as error:
+        sys.exit(f"ChromeDriver tidak dapat dijalankan: {error}")
+
+    wait = WebDriverWait(driver, 10)
+
+    try:
+        # login.html harus merender CSRF hidden input dan cookie.
         try:
-            driver.get(f"{base_url}/login/")
-        except Exception:
-            print(f"Server belum berjalan di {base_url}. Jalankan 'python manage.py runserver' terlebih dahulu.")
-            return
+            driver.get(f"{BASE_URL}/login/")
+        except WebDriverException:
+            sys.exit(
+                f"Server belum berjalan di {BASE_URL}. "
+                "Jalankan 'python3 manage.py runserver' terlebih dahulu."
+            )
+
         csrf = wait.until(
             EC.presence_of_element_located((By.NAME, "csrfmiddlewaretoken"))
         )
@@ -62,52 +101,50 @@ def main():
         assert driver.get_cookie("csrftoken")
         print("[PASS] CSRF token dan cookie terverifikasi")
 
-        # 2. Cek login user biasa dan cookie sesi
-        driver.find_element(By.NAME, "username").send_keys("burhan_test")
-        driver.find_element(By.NAME, "password").send_keys(USER_PASSWORD)
-        driver.find_element(By.XPATH, "//button[@type='submit']").click()
-        wait.until(EC.url_to_be(f"{base_url}/"))
-        # index.html menampilkan username pada <p class="last-login ...">
-        wait.until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, "p.last-login"))
-        )
+        # index.html menampilkan username hanya ketika user terautentikasi.
+        login_as(driver, wait, USER_USERNAME, USER_PASSWORD)
         assert driver.get_cookie("sessionid")
         assert driver.get_cookie("last_login")
         assert "Terakhir Login" in driver.page_source
+        assert "Logout" in driver.page_source
         print("[PASS] Login user biasa dan cookie sesi berhasil")
 
-        # 3. Cek pembatasan akses user biasa ke form tambah proyek
-        driver.get(f"{base_url}/projects/add/")
-        assert "403" in driver.title or "Forbidden" in driver.page_source
-        print("[PASS] Otorisasi user biasa dibatasi (403)")
-
-        # 4. Cek akses superuser ke form tambah proyek
-        driver.get(f"{base_url}/logout/")
-        wait.until(EC.presence_of_element_located((By.XPATH, "//a[contains(@href, '/login/')]")))
-        driver.get(f"{base_url}/login/")
-        wait.until(EC.presence_of_element_located((By.NAME, "username"))).send_keys("admin_test")
-        driver.find_element(By.NAME, "password").send_keys(ADMIN_PASSWORD)
-        driver.find_element(By.XPATH, "//button[@type='submit']").click()
-        wait.until(EC.url_to_be(f"{base_url}/"))
+        # create_project tidak dibatasi role. POST-nya dilindungi
+        # PORTFOLIO_EDIT_SECRET, sesuai implementasi views.py saat ini.
+        driver.get(f"{BASE_URL}/projects/add/")
         wait.until(
             EC.text_to_be_present_in_element(
-                (By.CSS_SELECTOR, "p.last-login"), "admin_test"
+                (By.TAG_NAME, "h1"), "Add New Projects"
             )
         )
+        wait.until(EC.presence_of_element_located((By.NAME, "edit_secret")))
+        print("[PASS] User biasa dapat membuka form proyek")
 
-        driver.get(f"{base_url}/projects/add/")
-        wait.until(EC.presence_of_element_located((By.CLASS_NAME, "project-form")))
-        print("[PASS] Akses superuser ke form proyek berhasil")
+        # Secret salah harus ditolak tanpa membuat project baru.
+        driver.find_element(By.NAME, "title").send_keys("E2E invalid secret")
+        driver.find_element(By.NAME, "description").send_keys("E2E validation")
+        driver.find_element(By.NAME, "edit_secret").send_keys("invalid-e2e-secret")
+        driver.find_element(
+            By.CSS_SELECTOR, "form.project-form button[type='submit']"
+        ).click()
+        wait.until(EC.presence_of_element_located((By.NAME, "edit_secret")))
+        assert "Kode rahasia salah!" in driver.page_source
+        print("[PASS] Secret proyek yang salah ditolak")
 
-        # 5. Cek logout dan penghapusan cookie
-        driver.get(f"{base_url}/logout/")
-        wait.until(EC.presence_of_element_located((By.XPATH, "//a[contains(@href, '/login/')]")))
+        logout(driver, wait)
         cookie_last_login = driver.get_cookie("last_login")
         assert cookie_last_login is None or cookie_last_login["value"] == ""
         print("[PASS] Logout dan pembersihan cookie berhasil")
 
-        print("\nSemua pengujian E2E berhasil!")
+        # Tidak ada route project khusus admin; superuser mengikuti flow yang sama.
+        login_as(driver, wait, ADMIN_USERNAME, ADMIN_PASSWORD)
+        driver.get(f"{BASE_URL}/projects/add/")
+        wait.until(EC.presence_of_element_located((By.CLASS_NAME, "project-form")))
+        wait.until(EC.presence_of_element_located((By.NAME, "edit_secret")))
+        print("[PASS] Superuser login dan form proyek berhasil")
 
+        logout(driver, wait)
+        print("\nSemua pengujian E2E berhasil!")
     finally:
         driver.quit()
 
