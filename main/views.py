@@ -60,7 +60,8 @@ def show_experiences(request):
     context = {
         "name": "Muh. Alfi Rizqy",
         "experience_list": experiences,
-        "title_query": title_query
+        "title_query": title_query,
+        "is_can_edit" : is_can_edit(request)
     }
 
     return render(request, "experience.html", context)
@@ -80,6 +81,8 @@ def show_projects(request):
         "name": "Lefi",
         "project_list": projects,
         "title_query": title_query,
+        "is_can_edit" : is_can_edit(request)
+
     }
     return render(request, "projects.html", context)
 
@@ -146,8 +149,10 @@ def github_contributions_api(request):
         return JsonResponse({"error": "Github Contribution data is unavailable"}, status=503)
     return JsonResponse(github_calendar)
 
+
+# PROJECTS
 def create_project(request):
-    if not request.user.is_superuser:
+    if not is_super_user(request):
         return HttpResponseForbidden("Anda tidak berhak membuat project baru!")
 
     form = ProjectForm(request.POST or None)
@@ -159,7 +164,7 @@ def create_project(request):
                 "form": form,
             })
 
-        if form.is_valid() and request.use.is_superuser:
+        if form.is_valid() and request.user.is_superuser:
             form.save()
             messages.success(request, "Proyek baru berhasil ditambahkan!")
             return redirect("main:show_projects")
@@ -172,7 +177,6 @@ def create_project(request):
 
     return render(request, "projects_form.html", context)
 
-
 def get_projects_json(request):
     title_query = request.GET.get("title", "").strip()
     projects = Project.objects.all()
@@ -183,8 +187,10 @@ def get_projects_json(request):
     projects_json = serializers.serialize("json", projects, use_natural_foreign_keys=True)
     return HttpResponse(projects_json, content_type="application/json")
 
-
+@login_required(login_url="/login/")
 def delete_project(request, project_id):
+    if not is_super_user:
+        return HttpResponseForbidden("Anda tidak berhak menghapus proyek!")
     project = get_object_or_404(Project, pk=project_id)
 
     if request.method == 'POST':
@@ -198,6 +204,33 @@ def delete_project(request, project_id):
 
     return redirect("main:show_projects")
 
+@login_required(login_url="/login/")
+def edit_project(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+
+    if not is_can_edit(request):
+        return HttpResponseForbidden("Anda tidak berhak mengedit proyek!")
+
+    if request.method == "POST":
+        form = ProjectForm(request.POST, instance=project)
+        if not has_edit_secret(request):
+            messages.error(request, "Kode sandi salah!")
+        elif form.is_valid():
+            form.save()
+            messages.success(request,"Project berhasil diperbaharui!")
+            return redirect("main:show_projects")
+    else:
+        form = ProjectForm(instance=project)
+
+    context = {
+        "name": "Lefi",
+        "form": form,
+        "project": project,
+        "is_edit": True,
+    }
+    return render(request, "projects_form.html" ,context)
+
+# EXPERIENCE
 @login_required(login_url="/login/")
 def create_experience(request):
     if not is_super_user(request):
@@ -261,7 +294,7 @@ def edit_experience(request, experience_id):
 
         if not has_edit_secret(request):
             messages.error(request,"Kata sandi salah!")
-        elif form.is_valid() and is_can_edit:
+        elif form.is_valid():
             form.save()
             messages.success(request, "Experience berhasil diperbarui")
             return redirect("main:show_experiences")
@@ -337,6 +370,5 @@ def is_super_user(request):
 
 def is_can_edit(request):
     return request.user.is_superuser or request.user.groups.filter(name="Editor").exists()
-
 
 # Create your views here.
