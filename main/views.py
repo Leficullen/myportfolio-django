@@ -3,7 +3,7 @@ from django.shortcuts import render
 import os
 import requests
 from datetime import datetime, timedelta, timezone
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 
 from main.models import Experience
 from main.models import Project
@@ -147,6 +147,9 @@ def github_contributions_api(request):
     return JsonResponse(github_calendar)
 
 def create_project(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden("Anda tidak berhak membuat project baru!")
+
     form = ProjectForm(request.POST or None)
     if (request.method == "POST"):
         if not has_edit_secret(request):
@@ -156,14 +159,15 @@ def create_project(request):
                 "form": form,
             })
 
-        if form.is_valid():
+        if form.is_valid() and request.use.is_superuser:
             form.save()
             messages.success(request, "Proyek baru berhasil ditambahkan!")
             return redirect("main:show_projects")
 
     context = {
         "name": "Lefi",
-        "form": form
+        "form": form,
+        "is_can_edit": True
     }
 
     return render(request, "projects_form.html", context)
@@ -193,7 +197,11 @@ def delete_project(request, project_id):
         return redirect("main:show_projects")
 
     return redirect("main:show_projects")
+
+@login_required(login_url="/login/")
 def create_experience(request):
+    if not is_super_user(request):
+        return HttpResponseForbidden("Anda tidak berhak membuat experience!")
 
     form = ExperienceForm(request.POST or None)
     context = {
@@ -212,7 +220,6 @@ def create_experience(request):
 
     return render(request, 'experiences_form.html', context)
 
-
 def get_experiences_json(request):
     title_query = request.GET.get("title", "").strip()
     experiences = Experience.objects.all()
@@ -223,8 +230,12 @@ def get_experiences_json(request):
     experiences_json = serializers.serialize("json", experiences)
     return HttpResponse(experiences_json, content_type="application/json")
 
+@login_required(login_url="/login")
 def delete_experience(request, experience_id):
+    if not is_super_user(request):
+        return HttpResponseForbidden("Anda tidak berhak menghapus experience!")
     experience = get_object_or_404(Experience, pk=experience_id)
+
 
     if request.method == "POST":
         if not has_edit_secret(request):
@@ -237,15 +248,20 @@ def delete_experience(request, experience_id):
 
     return redirect("main:show_experiences")
 
+@login_required(login_url="/login")
 def edit_experience(request, experience_id):
+
     experience = get_object_or_404(Experience, pk=experience_id)
+
+    if not is_can_edit(request):
+        return HttpResponseForbidden("Anda tidak berhak mengedit experience!")
 
     if request.method == "POST":
         form = ExperienceForm(request.POST, instance=experience)
 
         if not has_edit_secret(request):
             messages.error(request,"Kata sandi salah!")
-        elif form.is_valid():
+        elif form.is_valid() and is_can_edit:
             form.save()
             messages.success(request, "Experience berhasil diperbarui")
             return redirect("main:show_experiences")
@@ -316,6 +332,11 @@ def toggle_star(request, project_id):
 
     return redirect("main:show_projects")
 
+def is_super_user(request):
+    return request.user.is_superuser
+
+def is_can_edit(request):
+    return request.user.is_superuser or request.user.groups.filter(name="Editor").exists()
 
 
 # Create your views here.
