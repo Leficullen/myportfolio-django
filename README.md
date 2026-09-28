@@ -234,6 +234,16 @@ Untuk tugas ini, saya tidak menggunakan ai sama sekali, karena instruksi tugasny
 - https://www.w3schools.com/tags/att_input_type_date.asp
 - https://dev.to/rishav_upadhaya/day-9-adding-edit-delete-features-to-my-blog-project-li6
 
+  ---
+
+# 📑 Individual Assignment 4
+## Track Report
+pada tugas 4, saya menambahkan Groups `Editor`yang memiliki tambahan permissions: edit project dan edit experience. User dengan group editor memungkinkan untuk melihat dan mengedit data portofolio bagian project dan experience. Sesuai instruksi tugas, user yang berhak menambahkan dan mengedit data portofolio hanya superuser. Untuk memudahkan pekerjaan, saya membuat dua function di views, yaitu `is_superuser` dan `is_can_edit` sehingga saya dapat memanggilnya setiap kali membutuhkan authorization. Saya sadar bahwa saya belum membuat edit bagian `project`, sehingga saya menambahkan juga fitur tersebut di tugas ini. Terakhir, saya menyesuaikan template sehingga button interface hanya dapat terlihat bagi user yang memiliki authorization yang sesuai.
+
+## 🤖 AI Disclosure
+Untuk tugas ini, saya tidak menggunakan ai sama sekali, karena semuanya sudah tersedia seperti pada tutorial 4 dan implementasi saya sebelumnya, saya hanya membuka Django Docummentation untuk mempelajari sedikit bagian Groups dan cara menggunakannya.
+
+
 <p align="center">
   <strong>PBP F</strong><br/>
   Muh. Alfi Rizqy · 2506550721
