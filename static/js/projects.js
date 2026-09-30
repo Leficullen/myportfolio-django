@@ -50,12 +50,47 @@ function buildProjectCardElement(item) {
     const editHtml = CAN_EDIT
         ? `<a href="${editUrl}" class="btn btn-secondary btn-sm">Edit</a>`
         : "";
+    const deleteModalId = `delete-project-${projectId}`;
     const deleteHtml = IS_SUPERUSER
-        ? `<div class="project-card-actions"><form method="post" action="${deleteUrl}" class="project-delete-form">
-                ${csrfInput}
-                <input type="password" name="edit_secret" placeholder="Kode rahasia" required>
-                <button type="submit" class="button button-danger" onclick="return confirm('Yakin ingin menghapus project ini?');">Hapus</button>
-           </form></div>`
+        ? `<div class="project-card-actions">
+                <button type="button"
+                        class="button button-danger"
+                        popovertarget="${deleteModalId}"
+                        aria-label="Hapus ${project.title}"
+                        title="Hapus proyek">Hapus</button>
+           </div>
+           <div id="${deleteModalId}"
+                class="project-delete-modal"
+                popover="auto"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="${deleteModalId}-title">
+                <button type="button"
+                        class="project-delete-modal__backdrop"
+                        popovertarget="${deleteModalId}"
+                        popovertargetaction="hide"
+                        aria-label="Tutup konfirmasi hapus"></button>
+                <div class="project-delete-modal__content">
+                    <button type="button"
+                            class="project-delete-modal__close"
+                            popovertarget="${deleteModalId}"
+                            popovertargetaction="hide"
+                            aria-label="Tutup konfirmasi hapus">×</button>
+                    <h2 id="${deleteModalId}-title">Hapus Projek?</h2>
+                    <p>Apakah Anda yakin ingin menghapus <strong>${project.title}</strong>?</p>
+                    <div class="project-delete-modal__actions">
+                        <form method="post" action="${deleteUrl}">
+                            ${csrfInput}
+                            <input type="password"
+                                   name="edit_secret"
+                                   class="project-delete-modal__secret"
+                                   placeholder="Kode rahasia"
+                                   required>
+                            <button type="submit" class="button button-danger">Ya, Hapus</button>
+                        </form>
+                    </div>
+                </div>
+           </div>`
         : "";
 
     const starText = project.is_starred ? "Unstar" : "Star";
