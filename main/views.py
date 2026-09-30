@@ -24,6 +24,8 @@ from django.contrib.auth.decorators import login_required
 
 import datetime
 
+from django.views.decorators.http import require_POST
+
 
 def show_main(request):
     github_username = os.getenv("GITHUB_USERNAME", "Leficullen")
@@ -67,23 +69,15 @@ def show_experiences(request):
     return render(request, "experience.html", context)
 
 def show_projects(request):
-    json_response = get_projects_json(request)
-
-    projects = serializers.deserialize(
-        "json",
-        json_response.content.decode("utf-8"),
-    )
-
-    projects = [project.object for project in projects]
     title_query = request.GET.get("title", "").strip()
 
     context = {
         "name": "Lefi",
-        "project_list": projects,
         "title_query": title_query,
-        "is_can_edit" : is_can_edit(request)
-
+        "is_can_edit": is_can_edit(request),
+        "form": ProjectForm(),
     }
+
     return render(request, "projects.html", context)
 
 def get_github_contributions(username):
@@ -184,12 +178,31 @@ def get_projects_json(request):
     if title_query:
         projects = projects.filter(title__icontains=title_query)
 
-    projects_json = serializers.serialize("json", projects, use_natural_foreign_keys=True)
-    return HttpResponse(projects_json, content_type="application/json")
+    data = []
+    for project in projects:
+        starred_users = project.starred_by.all()
+        is_starred = request.user in starred_users if request.user.is_authenticated else  False
+        starred_by_names = ", ".join([u.username for u in starred_users])
+
+        data.append({
+            "pk": str(project.id),
+            "fields": {
+                "title": project.title,
+                "description": project.description,
+                "image": project.image,
+                "url_link": project.url_link,
+                "tech_stack": project.tech_stack,
+                "star_count": starred_users.count(),
+                "is_starred": is_starred,
+                "starred_by_names": starred_by_names,
+            }
+        })
+
+    return JsonResponse(data, safe=False)
 
 @login_required(login_url="/login/")
 def delete_project(request, project_id):
-    if not is_super_user:
+    if not is_super_user(request):
         return HttpResponseForbidden("Anda tidak berhak menghapus proyek!")
     project = get_object_or_404(Project, pk=project_id)
 
@@ -383,4 +396,22 @@ def is_super_user(request):
 def is_can_edit(request):
     return request.user.is_superuser or request.user.groups.filter(name="Editor").exists()
 
+
+@require_POST
+def create_project_ajax(request):
+    if not request.user.is_superuser:
+        return JsonResponse(
+            {"message": "Hanya pemilik portofolio yang dapat menambahkan proyek."},
+            status=403,
+        )
+
+    form = ProjectForm(request.POST)
+    if form.is_valid():
+        project = form.save()
+        return JsonResponse(
+            {"message": "Proyek berhasil ditambahkan.", "pk": str(project.id)},
+            status=201,
+        )
+
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
 # Create your views here.

@@ -50,6 +50,8 @@
         </div>
     </footer>
 
+    {%include "components/toast.html"%}
+
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>lucide.createIcons();</script>
     <script>
@@ -105,6 +107,7 @@
             }
         }, 500)
     </script>
+{% block page_scripts %}{% endblock page_scripts %}
 </body>
 
 </html>
