@@ -1,4 +1,20 @@
 {% extends 'base.html' %}
+{%load static%}
+{% block page_scripts %}
+<script>
+    window.projectsConfig = {
+        apiUrl: "{% url 'main:get_projects_json' %}",
+        deleteUrlTemplate: "{% url 'main:delete_project' project_id='00000000-0000-0000-0000-000000000000' %}",
+        editUrlTemplate: "{% url 'main:edit_project' project_id='00000000-0000-0000-0000-000000000000' %}",
+        starUrlTemplate: "{% url 'main:toggle_star_project' id='00000000-0000-0000-0000-000000000000' %}",
+        csrfToken: "{{ csrf_token }}",
+        isAuthenticated: {{ user.is_authenticated|yesno:"true,false" }},
+        isSuperuser: {{ user.is_superuser|yesno:"true,false" }},
+        canEdit: {{ is_can_edit|yesno:"true,false" }},
+    };
+</script>
+<script src="{% static 'js/projects.js' %}"></script>
+{% endblock %}
 {% block content %}
 
 <main>
@@ -12,8 +28,8 @@
 
             </div>
 
-            <form method="get" action="{% url 'main:show_projects' %}" class="project-search">
-                <input type="search"
+            <form id="project-search-form" method="get" action="{% url 'main:show_projects' %}" class="project-search">
+                <input id="search-input" type="search"
                 name="title"
                 value="{{title_query}}"
                 placeholder="Cari berdasarkan Nama Proyek" class="project-search__input"
@@ -21,13 +37,24 @@
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
 
+            <div id="loading" class="empty-state hide">
+                <p>Memuat projects...</p>
+            </div>
+            <div id="error" class="error-state hide">
+                <p>Gagal memuat data projects, silahkan coba lagi</p>
+            </div>
+            <div id="empty" class="empty-state hide">
+                <p>Belum ada proyek yang ditambahkan atau ditemukan</p>
+            </div>
+
+
             <button class="btn btn-primary" onclick="showToast('Notifikasi Jawa', 'Project berhasil dimuat dengan baik!', 'success')">
                 Tes Toast
             </button>
 
 
-            <div class="project-container">
-                {% for project in project_list %}
+            <div id="grid" class="project-container">
+                {% comment %} {% for project in project_list %}
                         <div class="project-card">
                             <div class="project-card-actions">
                                 <div class="project-actions">
@@ -63,8 +90,10 @@
                                 Belum ada proyek yang ditambahkan.
                             </p>
                         {% endif %}
-                {% endfor %}
+                {% endfor %} {% endcomment %}
             </div>
     </section>
+
 </main>
+
 {% endblock content %}
