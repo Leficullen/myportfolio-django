@@ -24,6 +24,8 @@ from django.contrib.auth.decorators import login_required
 
 import datetime
 
+from django.views.decorators.http import require_POST
+
 
 def show_main(request):
     github_username = os.getenv("GITHUB_USERNAME", "Leficullen")
@@ -73,6 +75,7 @@ def show_projects(request):
         "name": "Lefi",
         "title_query": title_query,
         "is_can_edit": is_can_edit(request),
+        "form": ProjectForm(),
     }
 
     return render(request, "projects.html", context)
@@ -393,4 +396,22 @@ def is_super_user(request):
 def is_can_edit(request):
     return request.user.is_superuser or request.user.groups.filter(name="Editor").exists()
 
+
+@require_POST
+def create_project_ajax(request):
+    if not request.user.is_superuser:
+        return JsonResponse(
+            {"message": "Hanya pemilik portofolio yang dapat menambahkan proyek."},
+            status=403,
+        )
+
+    form = ProjectForm(request.POST)
+    if form.is_valid():
+        project = form.save()
+        return JsonResponse(
+            {"message": "Proyek berhasil ditambahkan.", "pk": str(project.id)},
+            status=201,
+        )
+
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
 # Create your views here.
