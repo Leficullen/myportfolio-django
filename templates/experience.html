@@ -1,4 +1,18 @@
 {% extends 'base.html' %}
+{%load static%}
+{% block page_scripts%}
+<script>
+    window.experiencesConfig = {
+        apiUrl: "{% url 'main:get_experiences_json' %}",
+        editUrlTemplate: "{% url 'main:edit_experience' experience_id='00000000-0000-0000-0000-000000000000' %}",
+        starUrlTemplate: "{% url 'main:toggle_star_experience' id='00000000-0000-0000-0000-000000000000' %}",
+        csrfToken: "{{ csrf_token }}",
+        isSuperuser: {{ user.is_superuser|yesno:"true,false" }},
+        canEdit: {{ is_can_edit|yesno:"true,false" }},
+    };
+</script>
+<script src="{% static 'js/experience.js' %}"></script>
+{% endblock page_scripts%}
 {% block content %}
 
 <main>
@@ -12,7 +26,7 @@
                 {%endif%}
             </div>
 
-            <div class="experience-grid">
+            {% comment %} <div class="experience-grid">
                 {% for experience in experience_list %}
                     <article class="experience-card">
                         <div class="experience-card__meta">
@@ -47,7 +61,35 @@
                         Belum ada pengalaman yang ditambahkan.
                     </p>
                 {% endfor %}
+            </div> {% endcomment %}
+
+            <!-- Search Input -->
+            <form id="experience-search-form" class="project-search">
+                <input
+                    id="experience-search-input"
+                    type="search"
+                    name="title"
+                    value="{{title_query}}"
+                    placeholder="Search Experience here..."
+                    class="project-search__input"
+                >
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+
+            <!-- States -->
+            <div id="experience-loading" class="empty-state hide">
+                <p>Memuat pengalaman...</p>
             </div>
+
+            <div id="experience-error" class="error-state hide">
+                <p>Gagal memuat data pengalaman. Silakan coba lagi.</p>
+            </div>
+
+            <div id="experience-empty" class="empty-state hide">
+                <p>Belum ada pengalaman yang ditambahkan atau ditemukan.</p>
+            </div>
+
+            <div id="experience-grid" class="experience-grid hide"></div>
         </div>
     </section>
     </main>
