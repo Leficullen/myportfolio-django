@@ -429,4 +429,15 @@ def create_project_ajax(request):
         )
 
     return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
-# Create your views here.
+
+@require_POST
+def create_experience_ajax(request):
+    if not is_super_user(request):
+        return JsonResponse({"message": "Hanya pemilik portfolio yang dapat membuat experience"}, status=403)
+
+    form = ExperienceForm(request.POST)
+    if form.is_valid():
+        experience = form.save()
+        return JsonResponse({"message": "experience berhasil ditambahkan!", "pk": str(experience.id)}, status=201)
+
+    return JsonResponse({"errors" : form.errors.get_json_data()}, status=400)

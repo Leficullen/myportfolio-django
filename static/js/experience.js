@@ -1,5 +1,6 @@
 const {
      apiUrl: BASE_EXPERIENCE_ENDPOINT,
+     createExperienceUrl: CREATE_EXPERIENCE_ENDPOINT,
      editUrlTemplate,
      starUrlTemplate,
      csrfToken,
@@ -131,6 +132,92 @@ searchForm.addEventListener("submit", (event) => {
 
      searchExperiences();
 })
+
+const experienceForm = document.getElementById("experience-form");
+
+const closeExperienceModal = () => {
+     document.getElementById("add-experience-modal").hidePopover();
+
+}
+
+const getCookie = (name) => {
+     let cookieValue = null;
+
+     if (document.cookie && document.cookie !== "") {
+          const cookies = document.cookie.split(";");
+
+          for (let i = 0; i < cookies.length; i += 1) {
+               const cookie = cookies[i].trim();
+
+               if (cookie.startsWith(`${name}=`)) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+
+               }
+          }
+     }
+     return cookieValue;
+}
+
+const addExperience = async (event) => {
+     event.preventDefault()
+
+     const submitButton = experienceForm.querySelector(
+          'button[type="submit"]'
+     );
+
+     submitButton.disabled = true;
+
+     try {
+          const response = await fetch(CREATE_EXPERIENCE_ENDPOINT, {
+               method: 'POST',
+               headers: {
+                    "X-CSRFToken": getCookie("csrftoken")
+               },
+               body: new FormData(experienceForm),
+          });
+
+          const result = await response.json().catch(() => ({}));
+
+          if (response.ok) {
+               experienceForm.reset();
+               closeExperienceModal();
+
+               showToast("Berhasil", "Experience berhasil ditambahkan", "success");
+
+               fetchExperiences(searchInput.value.trim());
+          } else {
+               const errorMessages = result.errors
+                ? Object.values(result.errors)
+                    .flat()
+                    .map((error) => error.message)
+                : [
+                    result.message
+                    || `Terjadi kesalahan (status ${response.status}).`,
+                ];
+
+               showToast(
+                    "Gagal menambahkan pengalaman",
+                    errorMessages.join(" "),
+                    "error"
+               );
+          }
+     } catch (error) {
+          console.error("Error adding experience:", error);
+
+          showToast(
+               "Gagal menambahkan pengalaman",
+               "Tidak dapat terhubung ke server. Silakan coba lagi.",
+               "error"
+          );
+     } finally {
+          submitButton.disabled = false;
+     }
+}
+
+if (experienceForm) {
+     experienceForm.addEventListener("submit", addExperience);
+}
 
 
 fetchExperiences(searchInput.value.trim());

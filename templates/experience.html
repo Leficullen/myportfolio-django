@@ -3,13 +3,14 @@
 {% block page_scripts%}
 <script>
     window.experiencesConfig = {
-        apiUrl: "{% url 'main:get_experiences_json' %}",
-        editUrlTemplate: "{% url 'main:edit_experience' experience_id='00000000-0000-0000-0000-000000000000' %}",
-        starUrlTemplate: "{% url 'main:toggle_star_experience' id='00000000-0000-0000-0000-000000000000' %}",
-        csrfToken: "{{ csrf_token }}",
-        isSuperuser: {{ user.is_superuser|yesno:"true,false" }},
-        canEdit: {{ is_can_edit|yesno:"true,false" }},
-    };
+    apiUrl: "{% url 'main:get_experiences_json' %}",
+    editUrlTemplate: "{% url 'main:edit_experience' experience_id='00000000-0000-0000-0000-000000000000' %}",
+    starUrlTemplate: "{% url 'main:toggle_star_experience' id='00000000-0000-0000-0000-000000000000' %}",
+    canEdit: {{ is_can_edit|yesno:"true,false" }},
+    createExperienceUrl: "{% url 'main:create_experience_ajax' %}",
+    csrfToken: "{{ csrf_token }}",
+    isSuperuser: {{ user.is_superuser|yesno:"true,false" }},
+};
 </script>
 <script src="{% static 'js/experience.js' %}"></script>
 {% endblock page_scripts%}
@@ -22,7 +23,9 @@
             <div class="project-header">
                 <h1>Experience</h1>
                 {%if user.is_superuser%}
-                <a href="{% url 'main:create_experience' %}" class="btn btn-primary"><span>+</span>Tambah Experience</a>
+                <button type="button" class="btn btn-primary" popovertarget="add-experience-modal">
+                    + Tambah Experience
+                </button>
                 {%endif%}
             </div>
 
@@ -93,4 +96,7 @@
         </div>
     </section>
     </main>
+    {% if user.is_superuser %}
+        {% include "components/experience_form_modal.html" %}
+    {% endif %}
 {% endblock content %}
