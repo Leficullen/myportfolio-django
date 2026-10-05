@@ -87,7 +87,7 @@ const fetchExperiences = async (query = "") => {
           const experienceData = await response.json();
 
           if (experienceData.length === 0) {
-               // gridContainer.innerHTML = "";
+               gridContainer.innerHTML = "";
                displayExperienceSection({ showEmpty:true });
                return;
           }
@@ -109,5 +109,28 @@ const fetchExperiences = async (query = "") => {
      }
 
 }
+
+const SEARCH_DEBOUNCE_DELAY = 300;
+let searchDebounceTimer;
+
+const searchExperiences = () => {
+     fetchExperiences(searchInput.value.trim());
+}
+
+searchInput.addEventListener("input", () => {
+     clearTimeout(searchDebounceTimer);
+
+     searchDebounceTimer = setTimeout(() => {
+          searchExperiences();
+     }, SEARCH_DEBOUNCE_DELAY);
+});
+
+searchForm.addEventListener("submit", (event) => {
+     event.preventDefault();
+     clearTimeout(searchDebounceTimer);
+
+     searchExperiences();
+})
+
 
 fetchExperiences(searchInput.value.trim());
