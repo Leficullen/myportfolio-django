@@ -23,6 +23,12 @@
 | Assignment 2          |    ✅   |
 | Tutorial 3          |    ✅   |
 | Assignment 3         |    ✅   |
+| Tutorial 4         |    ✅   |
+| Assignment 4         |    ✅   |
+| Tutorial 5         |    ✅   |
+| Assignment 5         |    ✅   |
+
+
 
 
 
