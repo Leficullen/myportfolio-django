@@ -243,6 +243,40 @@ pada tugas 4, saya menambahkan Groups `Editor`yang memiliki tambahan permissions
 ## 🤖 AI Disclosure
 Untuk tugas ini, saya tidak menggunakan ai sama sekali, karena semuanya sudah tersedia seperti pada tutorial 4 dan implementasi saya sebelumnya, saya hanya membuka Django Docummentation untuk mempelajari sedikit bagian Groups dan cara menggunakannya.
 
+---
+
+# 📑 Individual Assignment 5
+
+## Track Report
+
+Pada tugas 5, saya melanjutkan fitur Experience dengan mengikuti pola dari Tutorial 5. Saya mengubah cara halaman Experience menampilkan data. Sebelumnya data Experience langsung ditampilkan dari template Django, tetapi sekarang data diambil dari endpoint JSON menggunakan JavaScript dan `fetch()`.
+
+Saya membuat endpoint JSON untuk Experience, lalu membuat file JavaScript untuk menampilkan kartu Experience. Saya juga menambahkan kondisi loading, empty, dan error. Selain itu, saya menambahkan fitur pencarian Experience berdasarkan judul dengan AJAX dan debouncing.
+
+Saya juga mengubah fitur tambah Experience menjadi modal. Form pada modal dikirim menggunakan AJAX, kemudian jika berhasil akan muncul toast dan daftar Experience diperbarui tanpa reload halaman. Saya membuat endpoint baru untuk menambahkan Experience melalui AJAX dengan respons JSON.
+
+Terakhir, saya menambahkan perlindungan XSS dengan `escapeHtml()` pada JavaScript dan `strip_tags()` pada `ExperienceForm`. Saya juga menyesuaikan kartu Experience agar tombol Edit, Star/Unstar, dan Delete tetap dapat digunakan sesuai hak akses pengguna.
+
+## 💭 Reflective Questions
+
+### 1. Apa itu debouncing dan mengapa teknik ini penting diterapkan pada fitur pencarian yang menggunakan AJAX?
+
+Debouncing adalah teknik untuk menunda pemanggilan suatu fungsi sampai tidak ada event baru dalam durasi tertentu. Pada fitur pencarian AJAX, event `input` berjalan setiap pengguna mengetik satu karakter. Tanpa debouncing, browser dapat mengirim banyak request ke server secara berurutan. Dengan debouncing, request pencarian baru dikirim setelah pengguna berhenti mengetik, misalnya selama 300 milidetik. Teknik ini mengurangi beban server, penggunaan jaringan, dan risiko hasil request lama menimpa hasil pencarian terbaru.
+
+### 2. Jelaskan fungsi dari penggunaan `await` ketika kita menggunakan `fetch()`! Apa yang akan terjadi jika kita tidak menggunakan `await`?
+
+`await` digunakan untuk menunggu Promise dari `fetch()` selesai sebelum program melanjutkan ke baris berikutnya. Misalnya, `await fetch(url)` menunggu respons server, sedangkan `await response.json()` menunggu isi respons diubah menjadi objek atau array JavaScript. Tanpa `await`, kode berikutnya dapat dijalankan sebelum data tersedia. Akibatnya, program dapat mencoba membaca data dari Promise yang belum selesai dan menimbulkan error atau hasil yang tidak sesuai.
+
+### 3. Jelaskan apa itu serangan XSS (Cross-Site Scripting) dan mengapa data yang ditampilkan melalui AJAX/JavaScript lebih rentan terhadap serangan ini daripada data yang ditampilkan langsung melalui template Django!
+
+XSS atau Cross-Site Scripting adalah serangan ketika penyerang menyisipkan script atau HTML berbahaya ke dalam data aplikasi, lalu kode tersebut dijalankan di browser pengguna lain. Data yang dirender langsung dengan template Django relatif lebih aman karena Django melakukan auto-escaping pada variabel template. Namun, saat data dari AJAX disisipkan melalui `innerHTML`, browser langsung menafsirkan string tersebut sebagai HTML. Jika data tidak di-escape, payload seperti tag `<img>` dengan atribut `onerror` dapat dijalankan sebagai JavaScript. Karena itu, data dari API perlu di-escape sebelum dimasukkan ke `innerHTML`, dan input juga perlu dibersihkan di server menggunakan validasi form seperti `strip_tags()`.
+
+## 🤖 AI Disclosure
+
+Dalam pengerjaan tugas ini, saya menggunakan AI sebagai pendamping belajar untuk memahami kembali alur Tutorial 5 secara bertahap, terutama konsep AJAX, `fetch()`, debouncing, CSRF, respons JSON, dan perlindungan XSS. Saya tetap mengimplementasikan kode pada proyek sendiri sambil memeriksa alur data dari view, endpoint, template, form, dan JavaScript.
+
+Selain tutorial yang diberikan, saya juga membaca diskusi pada Django Forum dan dokumentasi Django untuk memahami penggunaan `ModelForm`, validasi form, `JsonResponse`, CSRF, serta pola penanganan request pada Django. Saya menggunakan referensi tersebut untuk memahami alasan penggunaan pola kode, bukan hanya menyalin implementasi.
+
 
 <p align="center">
   <strong>PBP F</strong><br/>
