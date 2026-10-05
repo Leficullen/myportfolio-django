@@ -70,6 +70,19 @@ class ProjectForm(ModelForm):
 
 class ExperienceForm(ModelForm):
 
+     def clean_title(self):
+          title = strip_tags(self.cleaned_data["title"]).strip()
+          if not title:
+               raise ValidationError("Ga boleh cmn tag html kosong woi!!")
+
+          return title
+
+     def clean_description(self):
+          return strip_tags(self.cleaned_data["description"]).strip()
+
+     def clean_thumbnail(self):
+          return strip_tags(self.cleaned_data["thumbnail"] or "").strip()
+
      class Meta:
           model = Experience
           fields = [
