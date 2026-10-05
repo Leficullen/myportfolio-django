@@ -4,15 +4,17 @@
 <script>
     window.experiencesConfig = {
     apiUrl: "{% url 'main:get_experiences_json' %}",
+    deleteUrlTemplate: "{% url 'main:delete_experience' experience_id='00000000-0000-0000-0000-000000000000' %}",
     editUrlTemplate: "{% url 'main:edit_experience' experience_id='00000000-0000-0000-0000-000000000000' %}",
     starUrlTemplate: "{% url 'main:toggle_star_experience' id='00000000-0000-0000-0000-000000000000' %}",
     canEdit: {{ is_can_edit|yesno:"true,false" }},
+    isAuthenticated: {{ user.is_authenticated|yesno:"true,false" }},
     createExperienceUrl: "{% url 'main:create_experience_ajax' %}",
     csrfToken: "{{ csrf_token }}",
     isSuperuser: {{ user.is_superuser|yesno:"true,false" }},
 };
 </script>
-<script src="{% static 'js/experience.js' %}"></script>
+<script src="{% static 'js/experience.js' %}"></script>git
 {% endblock page_scripts%}
 {% block content %}
 
