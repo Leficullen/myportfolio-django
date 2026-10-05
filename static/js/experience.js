@@ -1,13 +1,16 @@
 const {
      apiUrl: BASE_EXPERIENCE_ENDPOINT,
      createExperienceUrl: CREATE_EXPERIENCE_ENDPOINT,
+     deleteUrlTemplate,
      editUrlTemplate,
      starUrlTemplate,
      csrfToken,
+     isAuthenticated: IS_AUTHENTICATED,
      isSuperuser: IS_SUPERUSER,
      canEdit: CAN_EDIT,
 } = window.experiencesConfig;
 
+const UUID_PLACEHOLDER = "00000000-0000-0000-0000-000000000000";
 let experiencesAbortController;
 
 
@@ -38,12 +41,84 @@ const escapeHtml = (value) => {
 
 const buildExperienceCard = (item) => {
      const experience = item.fields;
+     const experienceId = String(item.pk ?? "");
 
      const title = escapeHtml(experience.title);
      const description = escapeHtml(experience.description);
      const categoryDisplay = escapeHtml(experience.category_display);
+     const starCount = escapeHtml(experience.star_count);
+     const starredByNames = escapeHtml(experience.starred_by_names);
 
      const statusText = experience.is_ongoing ? "Sedang berlangsung" : "Selesai";
+     const editUrl = editUrlTemplate.replace(UUID_PLACEHOLDER, experienceId);
+     const starUrl = starUrlTemplate.replace(UUID_PLACEHOLDER, experienceId);
+     const deleteUrl = deleteUrlTemplate.replace(UUID_PLACEHOLDER, experienceId);
+     const csrfInput = `<input type="hidden" name="csrfmiddlewaretoken" value="${escapeHtml(csrfToken)}">`;
+
+     const editHtml = CAN_EDIT
+          ? `<a href="${escapeHtml(editUrl)}" class="btn btn-outline btn-sm">Edit</a>`
+          : "";
+
+     const isStarred = experience.is_starred;
+     const starText = isStarred ? "Unstar" : "Star";
+     const starClass = isStarred ? " is-starred" : "";
+     const starTitle = experience.star_count > 0
+          ? `Dibintangi oleh ${starredByNames}`
+          : "Jadilah yang pertama memberi star";
+     const starHtml = IS_AUTHENTICATED
+          ? `<form method="post" action="${escapeHtml(starUrl)}" class="star-form">
+                  ${csrfInput}
+                  <button type="submit" class="button button-star${starClass}" title="${escapeHtml(starTitle)}">
+                      <span aria-hidden="true">★</span>
+                      ${starText}
+                      <span class="star-count">${starCount}</span>
+                  </button>
+             </form>`
+          : "";
+
+     const deleteModalId = `delete-experience-${escapeHtml(experienceId)}`;
+     const deleteHtml = IS_SUPERUSER
+          ? `<div class="experience-card__delete">
+                  <button type="button"
+                          class="button button-danger"
+                          popovertarget="${deleteModalId}"
+                          aria-label="Hapus ${title}">
+                      Hapus
+                  </button>
+             </div>
+             <div id="${deleteModalId}"
+                  class="project-delete-modal"
+                  popover="auto"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="${deleteModalId}-title">
+                  <button type="button"
+                          class="project-delete-modal__backdrop"
+                          popovertarget="${deleteModalId}"
+                          popovertargetaction="hide"
+                          aria-label="Tutup konfirmasi hapus"></button>
+                  <div class="project-delete-modal__content">
+                      <button type="button"
+                              class="project-delete-modal__close"
+                              popovertarget="${deleteModalId}"
+                              popovertargetaction="hide"
+                              aria-label="Tutup konfirmasi hapus">×</button>
+                      <h2 id="${deleteModalId}-title">Hapus Experience?</h2>
+                      <p>Apakah Anda yakin ingin menghapus <strong>${title}</strong>?</p>
+                      <div class="project-delete-modal__actions">
+                          <form method="post" action="${escapeHtml(deleteUrl)}">
+                              ${csrfInput}
+                              <input type="password"
+                                     name="edit_secret"
+                                     class="project-delete-modal__secret"
+                                     placeholder="Kode rahasia"
+                                     required>
+                              <button type="submit" class="button button-danger">Ya, Hapus</button>
+                          </form>
+                      </div>
+                  </div>
+             </div>`
+          : "";
 
      const articleElement = document.createElement("article");
      articleElement.className = "experience-card";
@@ -55,7 +130,11 @@ const buildExperienceCard = (item) => {
           </div>
           <h2>${title}</h2>
           <p class="experience-description">${description}</p>
-          <div class="experience-card__actions"></div>
+          <div class="experience-card__actions">
+               ${editHtml}
+               ${starHtml}
+               ${deleteHtml}
+          </div>
      `
      return articleElement;
 }
