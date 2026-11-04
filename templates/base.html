@@ -57,6 +57,7 @@
     <script>
         const calendarRoot = document.querySelector("#github-calendar-root");
 
+        if (calendarRoot) {
         function renderGithubCalendar(calendar) {
             const months = calendar.months.map((month) => {
                 return `<span style="grid-column: span ${month.totalWeeks};">${month.name}</span>`;
@@ -106,6 +107,7 @@
                 calendarRoot.innerHTML = `<p class="calendar-empty">GitHub contribution data is unavailable.</p>`;
             }
         }, 500)
+        }
     </script>
 {% block page_scripts %}{% endblock page_scripts %}
 </body>

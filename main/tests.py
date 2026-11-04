@@ -66,8 +66,8 @@ class MainTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "projects.html")
 
-    # 2. Data model muncul di halaman HTML ketika ada data
-    def test_project_data_appears(self):
+    # 2. Data project tersedia melalui API yang dipakai halaman AJAX
+    def test_project_data_is_available_from_api(self):
         project = Project.objects.create(
             title="Fisiomate",
             description="Aplikasi untuk membantu Rehabilitasi Fisioterapi",
@@ -75,12 +75,14 @@ class MainTest(TestCase):
             url_link="https://fisiomate.leficullen.xyz"
         )
 
-        response = self.client.get(reverse("main:show_projects"))
+        response = self.client.get(reverse("api:project-list"))
 
-        self.assertContains(response, project.title)
-        self.assertContains(response, project.description)
-        self.assertContains(response, project.image)
-        self.assertContains(response, project.url_link)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()[0]["id"], str(project.id))
+        self.assertEqual(response.json()[0]["title"], project.title)
+        self.assertEqual(response.json()[0]["description"], project.description)
+        self.assertEqual(response.json()[0]["image"], project.image)
+        self.assertEqual(response.json()[0]["url_link"], project.url_link)
 
     # 3. Halaman HTML menampilkan pesan kondisi kosong ketika belum ada data
     def test_project_data_empty(self):
