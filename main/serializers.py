@@ -49,12 +49,14 @@ class ExperienceSerializer(serializers.ModelSerializer):
 
     star_count = serializers.SerializerMethodField()
     is_starred = serializers.SerializerMethodField()
-    starred_by = serializers.SerializerMethodField()
+    starred_by_names = serializers.SerializerMethodField()
+
+    category_display = serializers.CharField(source="get_category_display", read_only=True)
 
     class Meta:
         model = Experience
         fields = [
-            "id", "title", "description", "category", "thumbnail", "started_at", "ended_at", "starred_by", "duration", "is_current"
+            "id", "title", "description", "category", "category_display" , "thumbnail", "started_at", "ended_at", "duration", "is_current", "star_count", "is_starred", "starred_by_names"
         ]
 
         read_only_fields = ["id"]
@@ -69,7 +71,7 @@ class ExperienceSerializer(serializers.ModelSerializer):
         return strip_tags(value)
 
     def validate_category(self, value):
-        if value not in dict(Experience.CATEGORY_CHOICES):
+        if value not in dict(Experience.EXPERIENCE_CHOICES):
             raise serializers.ValidationError("Invalid Category")
         return value
 
@@ -100,7 +102,7 @@ class ExperienceSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         if request is None or not request.user.is_authenticated:
             return False
-        return request.user in obj.sarred_by.all()
+        return request.user in obj.starred_by.all()
 
     def get_starred_by_names(self, obj):
         return ", ".join(user.username for user in obj.starred_by.all())

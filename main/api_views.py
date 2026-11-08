@@ -76,7 +76,7 @@ def project_star(request, project_id):
 @permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def experience_list(request):
     if request.method in ("GET", "HEAD"):
-        experiences = Experience.objects.all().order_by("title", "id")
+        experiences = Experience.objects.prefetch_related("starred_by").order_by("title", "id")
         title = request.query_params.get("title", "").strip()
         if title:
             experiences = experiences.filter(title__icontains=title)
@@ -100,6 +100,10 @@ def experience_detail(request, experience_id):
         serializer = ExperienceSerializer(experience, context={"request":request})
         return Response(serializer.data)
 
+    if request.method == "DELETE":
+        experience.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     serializer = ExperienceSerializer(
         experience, data=request.data, partial=request.method == "PATCH",
         context={"request": request}
@@ -109,6 +113,8 @@ def experience_detail(request, experience_id):
     return Response(serializer.data)
 
 @api_view(["GET", "HEAD", "POST"])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
 def experience_star(request, experience_id):
     experience = get_object_or_404(Experience, pk=experience_id)
     if experience.starred_by.filter(pk=request.user.id).exists():
