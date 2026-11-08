@@ -1,4 +1,5 @@
 from django.utils.html import strip_tags
+from django.utils import timezone
 from rest_framework import serializers
 
 from main.models import Project
@@ -42,9 +43,13 @@ class ProjectSerializer(serializers.ModelSerializer):
     def get_starred_by_names(self, obj):
         return ", ".join(user.username for user in obj.starred_by.all())
 
-class ExperienceSerializers(serializers.ModelSerializer):
+class ExperienceSerializer(serializers.ModelSerializer):
     duration = serializers.SerializerMethodField()
     is_current = serializers.SerializerMethodField()
+
+    star_count = serializers.SerializerMethodField()
+    is_starred = serializers.SerializerMethodField()
+    starred_by = serializers.SerializerMethodField()
 
     class Meta:
         model = Experience
@@ -75,6 +80,8 @@ class ExperienceSerializers(serializers.ModelSerializer):
         return obj.ended_at is None
 
     def get_duration(self, obj):
+        if not obj.started_at:
+            return 0
         end = obj.ended_at or timezone.now().date()
         months = (end.year - obj.started_at.year) * 12 + (end.month - obj.started_at.month)
         return max(months, 0)
@@ -85,3 +92,15 @@ class ExperienceSerializers(serializers.ModelSerializer):
         if started and ended and ended < started:
             raise serializers.ValidationError("ended_at cannot be before started_at")
         return data
+
+    def get_star_count(self, obj):
+        return obj.starred_by.count()
+
+    def get_is_starred(self, obj):
+        request = self.context.get("request")
+        if request is None or not request.user.is_authenticated:
+            return False
+        return request.user in obj.sarred_by.all()
+
+    def get_starred_by_names(self, obj):
+        return ", ".join(user.username for user in obj.starred_by.all())
