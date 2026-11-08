@@ -56,6 +56,27 @@ def project_detail(request, project_id):
     serializer.save()
     return Response(serializer.data)
 
+
+@api_view(["GET", "HEAD", "PUT", "PATCH", "DELETE"])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
+def experience_detail(request, experience_id):
+    experience = get_object_or_404(
+        Experience.objects.prefetch_related("starred_by"), pk=experience_id
+    )
+
+    if request.method in ("GET", "HEAD"):
+        serializer = ExperienceSerializer(experience, context={"request":request})
+        return Response(serializer.data)
+
+    serializer = ExperienceSerializer(
+        experience, data=request.data, partial=request.method == "PATCH",
+        context={"request": request}
+    )
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response(serializer.data)
+
 @api_view(["POST"])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
