@@ -1,25 +1,17 @@
 {% extends 'base.html' %}
 {%load static%}
 {% block page_scripts%}
-<script>
-    window.experiencesConfig = {
-    apiUrl: "{% url 'main:get_experiences_json' %}",
-    deleteUrlTemplate: "{% url 'main:delete_experience' experience_id='00000000-0000-0000-0000-000000000000' %}",
-    editUrlTemplate: "{% url 'main:edit_experience' experience_id='00000000-0000-0000-0000-000000000000' %}",
-    starUrlTemplate: "{% url 'main:toggle_star_experience' id='00000000-0000-0000-0000-000000000000' %}",
-    canEdit: {{ is_can_edit|yesno:"true,false" }},
-    isAuthenticated: {{ user.is_authenticated|yesno:"true,false" }},
-    createExperienceUrl: "{% url 'main:create_experience_ajax' %}",
-    csrfToken: "{{ csrf_token }}",
-    isSuperuser: {{ user.is_superuser|yesno:"true,false" }},
-};
-</script>
 <script src="{% static 'js/experience.js' %}"></script>
 {% endblock page_scripts%}
 {% block content %}
 
 <main>
-    <section class="experience-section animate-slide-bottom" id="experience">
+    <section class="experience-section animate-slide-bottom" id="experience"
+             data-api-url="{% url 'api:experience-list' %}"
+             data-edit-url-template="{% url 'main:edit_experience' experience_id='00000000-0000-0000-0000-000000000000' %}"
+             data-can-edit="{{ is_can_edit|yesno:'true,false' }}"
+             data-is-authenticated="{{ user.is_authenticated|yesno:'true,false' }}"
+             data-is-superuser="{{ user.is_superuser|yesno:'true,false' }}">
         <div class="container">
             <p class="section-kicker">Perjalanan saya sejauh ini</p>
             <div class="project-header">

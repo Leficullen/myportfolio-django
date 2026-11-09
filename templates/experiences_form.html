@@ -10,7 +10,10 @@
                     <h1>Edit Experiences</h1>
                     <form method="post"
                     action="{% url 'main:edit_experience' experience_id=experience.id %}"
-                    class="project-form">
+                    class="project-form"
+                    id="experience-edit-form"
+                    data-experience-id="{{ experience.id }}"
+                    novalidate>
                 {% else %}
                     <h1>Add New Experiences</h1>
                     <form method="post"
@@ -72,4 +75,47 @@
             </div>
         </section>
     </main>
+
+{% if is_edit %}
+<script>
+(function () {
+    const form = document.getElementById("experience-edit-form");
+    if (!form) return;
+
+    const getCookie = (name) => {
+        const match = document.cookie.match("(^|;)\\s*" + name + "\\s*=\\s*([^;]+)");
+        return match ? decodeURIComponent(match.pop()) : "";
+    };
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const id = form.dataset.experienceId;
+        const formData = new FormData(form);
+        formData.delete("edit_secret");
+        formData.delete("csrfmiddlewaretoken");
+
+        try {
+            const response = await fetch(`/api/v1/experiences/${id}/`, {
+                method: "PATCH",
+                headers: { "X-CSRFToken": getCookie("csrftoken") },
+                body: formData,
+            });
+
+            if (response.ok) {
+                window.location.href = "{% url 'main:show_experiences' %}";
+                return;
+            }
+
+            const result = await response.json().catch(() => ({}));
+            const message = response.status === 403
+                ? "Anda tidak punya izin untuk mengubah data ini."
+                : (Object.values(result).flat().join(" ") || `Terjadi kesalahan (status ${response.status}).`);
+            alert(message);
+        } catch (error) {
+            alert("Tidak dapat terhubung ke server.");
+        }
+    });
+})();
+</script>
+{% endif %}
 {% endblock content %}
