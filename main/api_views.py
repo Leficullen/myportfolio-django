@@ -112,7 +112,7 @@ def experience_detail(request, experience_id):
     serializer.save()
     return Response(serializer.data)
 
-@api_view(["GET", "HEAD", "POST"])
+@api_view(["POST"])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def experience_star(request, experience_id):
