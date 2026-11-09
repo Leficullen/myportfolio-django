@@ -27,8 +27,8 @@
 | Assignment 4         |    ✅   |
 | Tutorial 5         |    ✅   |
 | Assignment 5         |    ✅   |
-
-
+| Tutorial 7         |    ✅   |
+| Assignment 6         |    ✅   |
 
 
 
@@ -283,6 +283,40 @@ Dalam pengerjaan tugas ini, saya menggunakan AI sebagai pendamping belajar untuk
 
 Selain tutorial yang diberikan, saya juga membaca diskusi pada Django Forum dan dokumentasi Django untuk memahami penggunaan `ModelForm`, validasi form, `JsonResponse`, CSRF, serta pola penanganan request pada Django. Saya menggunakan referensi tersebut untuk memahami alasan penggunaan pola kode, bukan hanya menyalin implementasi.
 
+---
+
+# 📑 Individual Assignment 6
+
+## Track Report
+
+Pada tugas 6, saya melanjutkan fitur Experience dengan menerapkan Django REST Framework, mengikuti pola yang sudah dipakai di Projects pada Tutorial 7. Data Experience yang sebelumnya diambil dari endpoint JSON manual sekarang saya pindahkan ke API /api/v1/, sehingga representasi data, validasi, dan hak akses jadi lebih rapi dan terstruktur.
+
+Saya membuat ExperienceSerializer dengan ModelSerializer dan menambahkan informasi star sebagai field read-only seperti jumlah star dan status star pengguna. Validasi input teks saya lakukan di validate_<field> sekaligus membersihkannya dengan strip_tags(). Untuk hak akses, saya memakai permission class agar pengunjung hanya bisa membaca, pengguna biasa bisa memberi star, Editor bisa mengubah lewat PUT/PATCH, dan pemilik bisa menambah serta menghapus data.
+
+Di sisi halaman, saya mengubah Experience agar menampilkan, mencari, menambah, memberi star, mengedit, dan menghapus data lewat API tanpa reload halaman. Edit dilakukan lewat PATCH menggunakan fetch(), pesan error dari API ditampilkan lewat toast, dan setiap perubahan data menyertakan X-CSRFToken serta tetap di-escape dengan escapeHtml(). Saya juga merapikan struktur dengan memisahkan JavaScript ke file sendiri dan memindahkan konfigurasi halaman ke atribut data-*.
+
+Terakhir, saya menulis test dengan APITestCase untuk memastikan tiap peran berperilaku sesuai aturannya, memeriksa isi database pada kasus penolakan, serta menambahkan test khusus untuk validasi, fitur star, dan perlindungan CSRF.
+
+## 💭 Reflective Questions
+
+### 1. Jelaskan apa yang dimaksud dengan REST dan mengapa mengembalikan JSON saja belum cukup untuk menyebut sebuah API sebagai RESTful!
+REST (Representational State Transfer) adalah gaya arsitektur untuk API yang berkomunikasi lewat HTTP, di mana setiap data dianggap sebagai resource yang diakses lewat URL dan dimanipulasi dengan HTTP method. Mengembalikan JSON saja belum cukup disebut RESTful karena REST menuntut lebih dari sekadar format data, melainkan penggunaan HTTP method yang sesuai maknanya, status code yang tepa, serta sifat stateles.
+`PUT` mengganti seluruh representasi resource (semua field wajib dikirim), sedangkan `PATCH` memperbarui sebagian field saja. Sebagai contoh, kita menggunakan `PUT` saat form edit mengirim seluruh data experience sekaligus, sedangkan kita menggunakan `PATCH` saat hanya mengubah satu field, misalnya memperbarui `title` saja tanpa mengirim ulang `description` dan `category`.
+
+### 2. Jelaskan peran serializer pada Django REST Framework! Apa keuntungannya dibandingkan merakit dictionary secara manual dengan JsonResponse seperti pada Tutorial 05?
+Serializer pada DRF bertugas mengubah objek Django (queryset/model instance) menjadi tipe data Python yang bisa di-render ke JSON, dan sebaliknya memvalidasi lalu mengubah data masuk menjadi objek model. Keuntungannya dibanding merakit dictionary manual dengan `JsonResponse` adalah validasi terpusat di `validate_<field>`, mapping field otomatis dari model, kemampuan membuat field turunan read-only, penanganan error yang konsisten, serta kode yang jauh lebih ringkas dan tidak mudah salah dibanding menyusun dict dan memvalidasi satu per satu secara manual.
+
+### 3. Jelaskan perbedaan autentikasi dan otorisasi pada Django REST Framework! Mengapa hak akses harus diperiksa dengan permission class di server, bukan hanya dengan menyembunyikan tombol di template?
+Menurut saya, Autentikasi menjawab "siapa kamu?", sedangkan otorisasi menjawab "apa yang boleh kamu lakukan?" (menentukan hak akses setelah identitas diketahui). Hak akses harus diperiksa dengan permission class di server karena menyembunyikan tombol di template hanyalah penyembunyian di sisi tampilan (client-side) sehingga siapa pun bisa mengirim request langsung ke endpoint (lewat `curl`, Postman, atau DevTools) tanpa melalui tombol itu. Hanya pengecekan di server yang benar-benar menolak aksi tidak sah.
+
+### 4. Jelaskan mengapa permintaan yang mengubah data tetap memerlukan token CSRF ketika API memakai SessionAuthentication! Mengapa test yang memakai force_authenticate tidak cukup untuk membuktikan bahwa perlindungan CSRF berjalan?
+CSRF tetap diperlukan dengan SessionAuthentication karena autentikasi berbasis session memakai cookie yang otomatis dikirim browser pada setiap request ke domain tersebut. Tanpa token CSRF, situs jahat bisa memancing browser korban mengirim request yang mengubah data memakai cookie session yang sah. Token CSRF membuktikan request benar-benar berasal dari halaman aplikasi kita, bukan dari situs lain.
+Mengapa `force_authenticate` tidak cukup? `force_authenticate` menyetel user langsung di request tanpa melewati proses login maupun mekanisme session/cookie, sehingga pemeriksaan CSRF di-bypass. Jadi test dengan `force_authenticate` tidak pernah menyentuh jalur CSRF. Untuk membuktikan perlindungan CSRF benar-benar aktif, test harus memakai `APIClient(enforce_csrf_checks=True)` dengan `.login()` yang meniru alur session sungguhan.
+
+
+## 🤖 AI Disclosure
+
+Khusus Tugas 6 (Django REST Framework), saya menggunakan AI sebagai pendamping untuk memahami serializer DRF (`ModelSerializer`, `SerializerMethodField`, `validate_<field>`), permission class berbasis peran, function-based API view dengan `@api_view` + `SessionAuthentication`, integrasi halaman lewat `fetch()` ke endpoint `/api/v1/`, serta penulisan `APITestCase` termasuk uji CSRF. Saya menelusuri dan memperbaiki sendiri bug yang muncul (mis. penamaan method serializer, dekorator view, dan penyesuaian JavaScript dari format Django lama ke format JSON DRF).
 
 <p align="center">
   <strong>PBP F</strong><br/>
