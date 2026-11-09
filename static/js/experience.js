@@ -1,11 +1,9 @@
-const {
-     apiUrl: BASE_EXPERIENCE_ENDPOINT,
-     editUrlTemplate,
-     csrfToken,
-     isAuthenticated: IS_AUTHENTICATED,
-     isSuperuser: IS_SUPERUSER,
-     canEdit: CAN_EDIT,
-} = window.experiencesConfig;
+const experienceConfigEl = document.getElementById("experience");
+const BASE_EXPERIENCE_ENDPOINT = experienceConfigEl.dataset.apiUrl;
+const editUrlTemplate = experienceConfigEl.dataset.editUrlTemplate;
+const CAN_EDIT = experienceConfigEl.dataset.canEdit === "true";
+const IS_AUTHENTICATED = experienceConfigEl.dataset.isAuthenticated === "true";
+const IS_SUPERUSER = experienceConfigEl.dataset.isSuperuser === "true";
 
 const UUID_PLACEHOLDER = "00000000-0000-0000-0000-000000000000";
 let experiencesAbortController;
